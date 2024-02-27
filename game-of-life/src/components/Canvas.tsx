@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Cell } from "../classes/Cell";
-const WIDTH = 5;
-const HEIGHT = 5;
+const WIDTH = 300;
+const HEIGHT = 300;
 const IS_ALIVE = false;
 
 type propType = {
@@ -24,10 +24,12 @@ const Canvas = (props : propType) => {
         let x = 0;
         let y = 0;
         const newCells: Cell[][] = [];
-        for(let i = 0; i < 5; i++) {
+        for(let i = 0; i <= 5; i++) {
             const row: Cell[] = [];
-            for(let j = 0; j < 5; j++) {
-                row.push(new Cell(WIDTH, HEIGHT, x, y, IS_ALIVE, contextRef.current!))
+            for(let j = 0; j <= 5; j++) {
+                const cell: Cell = new Cell(WIDTH, HEIGHT, x, y, IS_ALIVE, contextRef.current!);
+                cell.draw();
+                row.push(cell)
                 x += 50;
             }
             newCells.push(row);
