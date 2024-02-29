@@ -39,7 +39,10 @@ export class Cell implements CellInterface {
 
     draw(): void {
         this.ctx.strokeStyle = 'black';
-        this.ctx.strokeRect(this.posX, this.posY, this.width, this.height);
+        this.isAlive ? 
+        this.ctx.fillRect(this.posX, this.posY, this.width, this.height) :
+        this.ctx.strokeRect(this.posX, this.posY, this.width, this.height) 
+        
     }
 }
 export{};
