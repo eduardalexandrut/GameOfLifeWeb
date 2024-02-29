@@ -7,10 +7,7 @@ interface CellInterface  {
     ctx: CanvasRenderingContext2D | null;
     setIsAlive(value: boolean): void;
     getIsAlive(): boolean;
-    /**
-     * function to draw a cell on the canvas(ctx).
-     */
-    draw(): void;
+    draw(): void;/*** function to draw a cell on the canvas(ctx).*/
 }
 export class Cell implements CellInterface {
     width: number;
@@ -39,9 +36,13 @@ export class Cell implements CellInterface {
 
     draw(): void {
         this.ctx.strokeStyle = 'black';
-        this.isAlive ? 
-        this.ctx.fillRect(this.posX, this.posY, this.width, this.height) :
-        this.ctx.strokeRect(this.posX, this.posY, this.width, this.height) 
+        this.ctx.strokeRect(this.posX, this.posY, this.width, this.height);
+        if(this.isAlive) {
+            this.ctx.fillStyle = 'black';
+        }else {
+            this.ctx.fillStyle = 'white';
+        }
+        this.ctx.fillRect(this.posX, this.posY, this.width, this.height);
         
     }
 }
