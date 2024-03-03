@@ -1,9 +1,10 @@
 import { useRef } from "react"
+import { View } from "../App"
 
 
 type propType = {
-    create: boolean,
-    setCreate: React.Dispatch<React.SetStateAction<boolean>>,
+    view: View,
+    setView: React.Dispatch<React.SetStateAction<View>>,
     width: number,
     setWidth: React.Dispatch<React.SetStateAction<number>>,
     height: number
@@ -16,7 +17,7 @@ const WorldBuilder = (props:propType) => {
 
     const handleCreate = () => {
         if (widthRef.current && heightRef.current) {
-            props.setCreate(false);
+            props.setView(View.Player);
             props.setHeight(parseInt(widthRef.current.value));
             props.setWidth(parseInt(heightRef.current.value));
         }
