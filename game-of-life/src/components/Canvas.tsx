@@ -4,7 +4,9 @@ import { Context } from "../App";
 import { World } from "../classes/World";
 
 type propType = {
-    isPlaying: boolean
+    isPlaying: boolean,
+    generation: number,
+    setGeneration: React.Dispatch<React.SetStateAction<number>>
 }
 const CELL_WIDTH = 50;
 const CELL_HEIGHT = 50;
@@ -60,16 +62,6 @@ const Canvas = (props:propType) => {
         }
     },[props.isPlaying]);
 
-    //Function to start and stopt the interval tha updates the world.
-    const handleInterval = () => {
-        let interval;
-        if (props.isPlaying) {
-            interval = setInterval(evolve, 300);
-        } else {
-            clearInterval(interval);
-        }
-    }
-
     //Function that evolves the map based on conway's rules.
     const evolve = () => {
         setWorld((prevWorld:World) => {
@@ -109,6 +101,9 @@ const Canvas = (props:propType) => {
             newWorld.cells = newCells; // Update just the cells field
             return newWorld;
         });
+
+        //Increase the generation count.
+        props.setGeneration((prevG) => prevG + 1);
     };
     
     
