@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Cell } from "../classes/Cell";
+import { Context } from "../App";
+import { World } from "../classes/World";
 
 type propType = {
-    width: number,
-    height: number
+  
 }
 
 const CELL_WIDTH = 50;
@@ -19,23 +20,23 @@ const relativePositions = [
 
 
 const Canvas = (props : propType) => {
-    const [cells, setCells] = useState<Cell[][]>([]);
+    const [world, setWorld] = useContext(Context);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const contextRef = useRef<CanvasRenderingContext2D | null>();
     
     useEffect(() => {
         if (canvasRef.current) {
             contextRef.current = canvasRef.current.getContext('2d');
-            setCells(new Array());
+            //setCells(new Array());
         }
         //Create the 2d matrix of cells.
         let x = 0;
         let y = 0;
         const newCells: Cell[][] = [];
         //Create the 2d matrix of cells with random alive and dead cells.
-        for (let i = 0; i < props.width; i++) {
+        for (let i = 0; i < world.width; i++) {
             const row: Cell[] = [];
-            for (let j = 0; j < props.height; j++) {
+            for (let j = 0; j < world.height; j++) {
                 // Generate a random boolean to determine if the cell is alive or dead
                 const isAlive = Math.random() > 0.8; // Adjust the probability threshold as needed
                 const cell: Cell = new Cell(CELL_WIDTH, CELL_HEIGHT, x, y, isAlive, contextRef.current!);
@@ -47,7 +48,7 @@ const Canvas = (props : propType) => {
             y += 50;
             x = 0;
         }
-        setCells(newCells);
+        world.cells = newCells;//setCells(newCells);
 
         //console.log(cells)
 
@@ -59,16 +60,16 @@ const Canvas = (props : propType) => {
 
     //Function that evolves the map based on conway's rules.
     const evolve = () => {
-        setCells(prevCells => {
-            const newCells = prevCells.map((row, i) => {
+        setWorld((prevWorld:World) => {
+            const newCells = prevWorld.cells.map((row, i) => {
                 return row.map((cell, j) => {
                     //Loop over all the neighbours of each cell and find out how many are alive.
                     const aliveNeighbours: Cell[] = [];
                     relativePositions.forEach((pos) => {
                         const ni = i + pos[0];
                         const nj = j + pos[1];
-                        if (ni >= 0 && ni < props.width && nj >= 0 && nj < props.height) {
-                            const neighbor: Cell = prevCells[ni][nj];
+                        if (ni >= 0 && ni < prevWorld.width && nj >= 0 && nj < prevWorld.height) {
+                            const neighbor: Cell = prevWorld.cells[ni][nj];
                             if (neighbor.isAlive) {
                                 aliveNeighbours.push(neighbor);
                             }
@@ -90,15 +91,21 @@ const Canvas = (props : propType) => {
     
             // Redraw all cells after updating state
             newCells.forEach(row => row.forEach(cell => cell.draw()));
+            console.log(newCells)
     
-            return newCells; // Return the new state value
+            // Return a new world object with only cells updated
+            const newWorld = new World(prevWorld.width, prevWorld.height, prevWorld.name); // Create a new World instance
+            newWorld.cells = newCells; // Update just the cells field
+            return newWorld;
         });
     };
+    
+    
     
 
 
     return(
-        <canvas ref={canvasRef} width={props.width * CELL_WIDTH} height={props.height * CELL_WIDTH}></canvas>
+        <canvas ref={canvasRef} width={world.width * CELL_WIDTH} height={world.height * CELL_WIDTH}></canvas>
     )
 }
 

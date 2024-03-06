@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { createContext, useState, useContext } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Canvas from './components/Canvas';
 import WorldBuilder from './components/WorldBuilder';
 import WorldPlayer from './components/WorldPlayer';
+import { WorldProvider } from './components/WorldContext';
+import { World } from './classes/World';
 
 export enum View {
   Home,
@@ -12,14 +14,11 @@ export enum View {
   Selector
 }
 
-function App() {
-  const CELL_WIDTH = 50;
-  const CELL_HEIGHT = 50;
+export const Context = createContext(null);
 
-  
+function App() {
   const [view, setView] = useState<View>(View.Builder);
-  const [width, setWidth] = useState<number>(0);
-  const [height, setHeight] = useState<number>(0);
+  const [world, setWorld] = useState<World | null>(null);
 
   // Rendering based on the value of `view` using switch statement
   let content;
@@ -30,21 +29,20 @@ function App() {
     case View.Builder:
       content = (
         <WorldBuilder
-          setWidth={setWidth}
-          width={width}
-          setHeight={setHeight}
-          height={height}
           view={view}
           setView={setView}
         />
       );
       break;
     case View.Player:
-      content = <h1>Player</h1>
-      break;
-    case View.Selector:
       content = (
         <WorldPlayer/>
+        )
+        break;
+        case View.Selector:
+          content = (
+        //<Canvas/>
+        {}
       )
       break;
     default:
@@ -52,9 +50,11 @@ function App() {
   }
 
   return (
-    <div className="App">
-      {content}
-    </div>
+    <Context.Provider value={[world, setWorld]}>
+      <div className="App">
+        {content}
+      </div>
+    </Context.Provider>
   );
 }
 

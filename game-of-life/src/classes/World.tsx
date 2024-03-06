@@ -7,7 +7,7 @@ interface WorldInterface {
     cells: Cell[][]
 }
 
-class World implements WorldInterface{
+export class World implements WorldInterface{
     #width: number;
     #height: number;
     #name: string;

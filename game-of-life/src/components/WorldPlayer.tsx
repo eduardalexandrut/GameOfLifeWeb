@@ -1,8 +1,9 @@
+import Canvas from "./Canvas";
 
 const WorldPlayer = (props:any) => {
     return (
         <div>
-            <h1>WorldPlayer</h1>
+            <Canvas/>
         </div>
     )
 }

@@ -1,32 +1,35 @@
-import { useRef } from "react"
-import { View } from "../App"
+import { useContext, useRef } from "react"
+import { Context, View } from "../App"
+import { useWorldContext } from "./WorldContext"
+import { World } from "../classes/World"
 
 
 type propType = {
     view: View,
     setView: React.Dispatch<React.SetStateAction<View>>,
-    width: number,
-    setWidth: React.Dispatch<React.SetStateAction<number>>,
-    height: number
-    setHeight: React.Dispatch<React.SetStateAction<number>>
 }
 
 const WorldBuilder = (props:propType) => {
     const widthRef = useRef<HTMLInputElement>(null);
     const heightRef = useRef<HTMLInputElement>(null);
+    const nameRef = useRef<HTMLInputElement>(null);
+    const [world, setWorld] = useContext(Context);
 
     const handleCreate = () => {
-        if (widthRef.current && heightRef.current) {
+        if (widthRef.current && heightRef.current && nameRef.current) {
+            const width = parseInt(widthRef.current.value);
+            const height = parseInt(heightRef.current.value);
+            const name = nameRef.current.value;
+            setWorld(new World(width, height, name));
             props.setView(View.Player);
-            props.setHeight(parseInt(widthRef.current.value));
-            props.setWidth(parseInt(heightRef.current.value));
         }
     }
+    
     return (
         <div id = 'world-builder'>
             <h1>Create a new world</h1>
             <form action="" method="">
-                <input type="text" name="name" placeholder="world name"/>
+                <input ref={nameRef} type="text" name="name" placeholder="world name"/>
                 <input ref={widthRef} type="number" name="width" placeholder="width"/>
                 <input ref={heightRef} type="number" name="height" placeholder="height"/>
                 <button onClick={()=>handleCreate()}>Create</button>
