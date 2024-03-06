@@ -6,7 +6,8 @@ import { World } from "../classes/World";
 type propType = {
     isPlaying: boolean,
     generation: number,
-    setGeneration: React.Dispatch<React.SetStateAction<number>>
+    setGeneration: React.Dispatch<React.SetStateAction<number>>,
+    speed: number,
 }
 const CELL_WIDTH = 50;
 const CELL_HEIGHT = 50;
@@ -28,7 +29,6 @@ const Canvas = (props:propType) => {
     useEffect(() => {
         if (canvasRef.current) {
             contextRef.current = canvasRef.current.getContext('2d');
-            //setCells(new Array());
         }
         //Create the 2d matrix of cells.
         let x = 0;
@@ -49,18 +49,16 @@ const Canvas = (props:propType) => {
             y += 50;
             x = 0;
         }
-        world.cells = newCells;//setCells(newCells);
-
-        //console.log(cells)
+        world.cells = newCells;
 
     }, []);
 
     useEffect(()=> {
         if (props.isPlaying) {
-            const intId = setInterval(evolve, 500);
+            const intId = setInterval(evolve, props.speed);
             return () => clearInterval(intId);
         }
-    },[props.isPlaying]);
+    },[props.isPlaying, props.speed]);
 
     //Function that evolves the map based on conway's rules.
     const evolve = () => {
