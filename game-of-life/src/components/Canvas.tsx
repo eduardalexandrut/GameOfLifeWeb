@@ -3,9 +3,6 @@ import { Cell } from "../classes/Cell";
 import { Context } from "../App";
 import { World } from "../classes/World";
 
-type propType = {
-  
-}
 
 const CELL_WIDTH = 50;
 const CELL_HEIGHT = 50;
@@ -19,7 +16,7 @@ const relativePositions = [
 
 
 
-const Canvas = (props : propType) => {
+const Canvas = () => {
     const [world, setWorld] = useContext(Context);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const contextRef = useRef<CanvasRenderingContext2D | null>();
