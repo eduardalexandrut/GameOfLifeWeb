@@ -3,7 +3,9 @@ import { Cell } from "../classes/Cell";
 import { Context } from "../App";
 import { World } from "../classes/World";
 
-
+type propType = {
+    isPlaying: boolean
+}
 const CELL_WIDTH = 50;
 const CELL_HEIGHT = 50;
 const IS_ALIVE = false;
@@ -16,7 +18,7 @@ const relativePositions = [
 
 
 
-const Canvas = () => {
+const Canvas = (props:propType) => {
     const [world, setWorld] = useContext(Context);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const contextRef = useRef<CanvasRenderingContext2D | null>();
@@ -49,11 +51,24 @@ const Canvas = () => {
 
         //console.log(cells)
 
-        //Set interval so that the matrix gets evolved every 1 second.
-        const interval = setInterval(evolve, 300);
-
-        return () => clearInterval(interval); //Cleanup function.
     }, []);
+
+    useEffect(()=> {
+        if (props.isPlaying) {
+            const intId = setInterval(evolve, 500);
+            return () => clearInterval(intId);
+        }
+    },[props.isPlaying]);
+
+    //Function to start and stopt the interval tha updates the world.
+    const handleInterval = () => {
+        let interval;
+        if (props.isPlaying) {
+            interval = setInterval(evolve, 300);
+        } else {
+            clearInterval(interval);
+        }
+    }
 
     //Function that evolves the map based on conway's rules.
     const evolve = () => {
@@ -88,7 +103,6 @@ const Canvas = () => {
     
             // Redraw all cells after updating state
             newCells.forEach(row => row.forEach(cell => cell.draw()));
-            console.log(newCells)
     
             // Return a new world object with only cells updated
             const newWorld = new World(prevWorld.width, prevWorld.height, prevWorld.name); // Create a new World instance
