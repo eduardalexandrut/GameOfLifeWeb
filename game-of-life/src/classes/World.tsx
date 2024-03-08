@@ -1,21 +1,33 @@
 import { Cell } from "./Cell";
 
 interface WorldInterface {
-    width: number,
-    height: number,
+    columns: number,
+    rows: number,
     name: string,
-    cells: Cell[][]
+    cells: Cell[][],
+    draw(): void,
+    evolve(): void,
+    setContext(ctx:CanvasRenderingContext2D): void
 }
+const CELL_columns = 50;
+const CELL_rows = 50;
+// Define relative positions of neighbors.
+const relativePositions = [
+  [-1, -1], [-1, 0], [-1, 1],
+  [0, -1],           [0, 1],
+  [1, -1],  [1, 0],  [1, 1]
+];
+
 
 export class World implements WorldInterface{
-    #width: number;
-    #height: number;
+    #columns: number;
+    #rows: number;
     #name: string;
     #cells: Cell[][];
 
-    constructor(width: number, height: number, name: string) {
-        this.#width = width;
-        this.#height = height;
+    constructor(columns: number, rows: number, name: string) {
+        this.#columns = columns;
+        this.#rows = rows;
         this.#name = name;
         this.#cells = this.#initialize_random();
       }
@@ -26,38 +38,38 @@ export class World implements WorldInterface{
          let y = 0;
          const newCells: Cell[][] = [];
          //Create the 2d matrix of cells with random alive and dead cells.
-         for (let i = 0; i < this.width; i++) {
+         for (let i = 0; i < this.columns; i++) {
              const row: Cell[] = [];
-             for (let j = 0; j < this.height; j++) {
+             for (let j = 0; j < this.rows; j++) {
                  // Generate a random boolean to determine if the cell is alive or dead
                  const isAlive = Math.random() > 0.8; // Adjust the probability threshold as needed
-                 const cell: Cell = new Cell(this.width, this.height, x, y, isAlive);
+                 const cell: Cell = new Cell(CELL_columns, CELL_rows, x, y, isAlive);
                  //cell.draw();
                  row.push(cell);
-                 x += this.width;
+                 x += this.columns;
              }
              newCells.push(row);
-             y += this.height;
+             y += this.rows;
              x = 0;
          }
          return newCells;
       }
     
       // Define getters and setters
-      get width(): number {
-        return this.#width;
+      get columns(): number {
+        return this.#columns;
       }
     
-      set width(value: number) {
-        this.#width = value;
+      set columns(value: number) {
+        this.#columns = value;
       }
     
-      get height(): number {
-        return this.#height;
+      get rows(): number {
+        return this.#rows;
       }
     
-      set height(value: number) {
-        this.#height = value;
+      set rows(value: number) {
+        this.#rows = value;
       }
     
       get name(): string {
@@ -74,6 +86,46 @@ export class World implements WorldInterface{
     
       set cells(value: Cell[][]) {
         this.#cells = value;
+      }
+
+      draw(): void {
+          this.#cells.forEach((row) => row.forEach((cell) => cell.draw));
+      }
+
+      evolve(): void {
+        const newCells = this.#cells.map((row, i) => {
+          return row.map((cell, j) => {
+              //Loop over all the neighbours of each cell and find out how many are alive.
+              const aliveNeighbours: Cell[] = [];
+              relativePositions.forEach((pos) => {
+                  const ni = i + pos[0];
+                  const nj = j + pos[1];
+                  if (ni >= 0 && ni < this.#columns && nj >= 0 && nj < this.#rows) {
+                      const neighbor: Cell = this.#cells[ni][nj];
+                      if (neighbor.isAlive) {
+                          aliveNeighbours.push(neighbor);
+                      }
+                  }
+              });
+              //Use conway's conditions to evolve the matrix of cells
+              if (cell.isAlive) {
+                  if (aliveNeighbours.length < 2 || aliveNeighbours.length > 3) {
+                      return new Cell(cell.width, cell.height, cell.posX, cell.posY, false);
+                  }
+              } else {
+                  if (aliveNeighbours.length === 3) {
+                      return new Cell(cell.width, cell.height, cell.posX, cell.posY, true);
+                  }
+              }
+              return cell;
+          });
+        });
+
+        this.#cells = newCells;
+      }
+
+      setContext(ctx:CanvasRenderingContext2D): void {
+          this.#cells.forEach((row) =>row.forEach((cell) => cell.ctx = ctx));
       }
 
 }

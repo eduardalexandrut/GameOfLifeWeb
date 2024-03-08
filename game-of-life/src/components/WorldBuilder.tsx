@@ -9,6 +9,7 @@ type propType = {
     setView: React.Dispatch<React.SetStateAction<View>>,
 }
 
+
 const WorldBuilder = (props:propType) => {
     const widthRef = useRef<HTMLInputElement>(null);
     const heightRef = useRef<HTMLInputElement>(null);
@@ -17,10 +18,10 @@ const WorldBuilder = (props:propType) => {
 
     const handleCreate = () => {
         if (widthRef.current && heightRef.current && nameRef.current) {
-            const width = parseInt(widthRef.current.value);
-            const height = parseInt(heightRef.current.value);
+            const columns = parseInt(widthRef.current.value);
+            const rows = parseInt(heightRef.current.value);
             const name = nameRef.current.value;
-            setWorld(new World(width, height, name));
+            setWorld(new World(columns, rows, name));
             props.setView(View.Player);
         }
     }
