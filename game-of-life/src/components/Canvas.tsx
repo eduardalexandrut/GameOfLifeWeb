@@ -40,7 +40,7 @@ const Canvas = (props:propType) => {
             for (let j = 0; j < world.height; j++) {
                 // Generate a random boolean to determine if the cell is alive or dead
                 const isAlive = Math.random() > 0.8; // Adjust the probability threshold as needed
-                const cell: Cell = new Cell(CELL_WIDTH, CELL_HEIGHT, x, y, isAlive, contextRef.current!);
+                const cell: Cell = new Cell(CELL_WIDTH, CELL_HEIGHT, x, y, isAlive);
                 cell.draw();
                 row.push(cell);
                 x += 50;
@@ -80,11 +80,11 @@ const Canvas = (props:propType) => {
                     //Use conway's conditions to evolve the matrix of cells
                     if (cell.isAlive) {
                         if (aliveNeighbours.length < 2 || aliveNeighbours.length > 3) {
-                            return new Cell(cell.width, cell.height, cell.posX, cell.posY, false, contextRef.current!);
+                            return new Cell(cell.width, cell.height, cell.posX, cell.posY, false);
                         }
                     } else {
                         if (aliveNeighbours.length === 3) {
-                            return new Cell(cell.width, cell.height, cell.posX, cell.posY, true, contextRef.current!);
+                            return new Cell(cell.width, cell.height, cell.posX, cell.posY, true);
                         }
                     }
                     return cell;

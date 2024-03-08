@@ -5,45 +5,81 @@ interface CellInterface  {
     posY: number;
     isAlive: boolean;
     ctx: CanvasRenderingContext2D | null;
-    setIsAlive(value: boolean): void;
-    getIsAlive(): boolean;
     draw(): void;/*** function to draw a cell on the canvas(ctx).*/
 }
 export class Cell implements CellInterface {
-    width: number;
-    height: number;
-    posX: number;
-    posY: number;
-    isAlive: boolean;
-    ctx: CanvasRenderingContext2D;
+    #width: number;
+    #height: number;
+    #posX: number;
+    #posY: number;
+    #isAlive: boolean;
+    #ctx: CanvasRenderingContext2D | null;
 
-    constructor(width: number, height: number, posX: number, posY: number, isAlive: boolean, ctx: CanvasRenderingContext2D) {
-        this.width = width;
-        this.height = height;
-        this.posX = posX;
-        this.posY = posY;
-        this.isAlive = isAlive;
-        this.ctx = ctx;
+    constructor(width: number, height: number, posX: number, posY: number, isAlive: boolean) {
+        this.#width = width;
+        this.#height = height;
+        this.#posX = posX;
+        this.#posY = posY;
+        this.#isAlive = isAlive;
+        this.#ctx = null;
     }
 
-    setIsAlive(value: boolean): void {
-        this.isAlive = value;
+    get width(): number {
+        return this.#width;
+    }
+    set width(value: number) {
+        this.#width = value;
     }
 
-    getIsAlive(): boolean {
-        return this.isAlive;
+    get height(): number {
+        return this.#height;
+    }
+    set height(value: number) {
+        this.#height = value;
+    }
+
+    get posX(): number {
+        return this.#posX;
+    }
+    set posX(value: number) {
+        this.#posX = value;
+    }
+
+    get posY(): number {
+        return this.#posY;
+    }
+    set posY(value: number) {
+        this.#posY = value;
+    }
+
+    get isAlive(): boolean {
+        return this.#isAlive;
+    }
+    set isAlive(value: boolean) {
+        this.#isAlive = value;
+    }
+
+    get ctx(): CanvasRenderingContext2D | null {
+        return this.#ctx;
+    }
+    set ctx(value: CanvasRenderingContext2D | null) {
+        this.#ctx = value;
     }
 
     draw(): void {
-        this.ctx.strokeStyle = 'black';
-        this.ctx.strokeRect(this.posX, this.posY, this.width, this.height);
-        if(this.isAlive) {
-            this.ctx.fillStyle = 'black';
-        }else {
-            this.ctx.fillStyle = 'white';
+        if (!this.#ctx) {
+            throw new Error('Canvas context is not set.');
         }
-        this.ctx.fillRect(this.posX, this.posY, this.width, this.height);
-        
+
+        this.#ctx.strokeStyle = 'black';
+        this.#ctx.strokeRect(this.#posX, this.#posY, this.#width, this.#height);
+        if (this.#isAlive) {
+            this.#ctx.fillStyle = 'black';
+        } else {
+            this.#ctx.fillStyle = 'white';
+        }
+        this.#ctx.fillRect(this.#posX, this.#posY, this.#width, this.#height);
     }
 }
+
 export{};
