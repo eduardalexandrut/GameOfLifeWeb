@@ -1,24 +1,61 @@
-import React, { useState } from 'react';
+import React, { createContext, useState, useContext } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Canvas from './components/Canvas';
 import WorldBuilder from './components/WorldBuilder';
+import WorldPlayer from './components/WorldPlayer';
+import { WorldProvider } from './components/WorldContext';
+import { World } from './classes/World';
+import WorldSelector from './components/WorldSelector';
+import WorldMenu from './components/WorldMenu';
+
+export enum View {
+  Menu,
+  Builder,
+  Player,
+  Selector
+}
+
+export const Context = createContext(null);
 
 function App() {
-  const CELL_WIDTH = 50;
-  const CELL_HEIGHT = 50;
-  
-  const[create, setCreate] = useState<boolean>(true);
-  const[width, setWidth] = useState<number>(0);
-  const[height, setHeight] = useState<number>(0);
+  const [view, setView] = useState<View>(View.Menu);
+  const [world, setWorld] = useState<World | null>(null);
+
+  // Rendering based on the value of `view` using switch statement
+  let content;
+  switch (view) {
+    case View.Menu:
+      content = <WorldMenu view={view} setView={setView}/>;
+      break;
+    case View.Builder:
+      content = (
+        <WorldBuilder
+          view={view}
+          setView={setView}
+        />
+      );
+      break;
+    case View.Player:
+      content = (
+        <WorldPlayer/>
+        )
+        break;
+        case View.Selector:
+          content = (
+        <WorldSelector/>
+      )
+      break;
+    default:
+      content = null;
+  }
+
   return (
-    <div className="App">
-      {create ? 
-       <WorldBuilder setWidth={setWidth} width={width} setHeight={setHeight} height={height} create={create} setCreate={setCreate}/>
-       : 
-        <Canvas width={width} height={height} />
-      }
-    </div>
+    <Context.Provider value={[world, setWorld]}>
+      <div className="App">
+        {content}
+      </div>
+    </Context.Provider>
   );
 }
 
