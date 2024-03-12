@@ -37,7 +37,7 @@ const Canvas = (props : propType) => {
             const row: Cell[] = [];
             for (let j = 0; j < props.height; j++) {
                 // Generate a random boolean to determine if the cell is alive or dead
-                const isAlive = Math.random() > 0.8; // Adjust the probability threshold as needed
+                const isAlive = Math.random() > 0.4; // Adjust the probability threshold as needed
                 const cell: Cell = new Cell(CELL_WIDTH, CELL_HEIGHT, x, y, isAlive, contextRef.current!);
                 cell.draw();
                 row.push(cell);
