@@ -20,7 +20,8 @@ const Canvas = (props:propType) => {
     useEffect(() => {
         if (canvasRef.current) {
             contextRef.current = canvasRef.current.getContext('2d');
-            world.setContext(contextRef.current);//Set the context for all the cells in the world.      
+            world.setContext(contextRef.current);//Set the context for all the cells in the world.   
+            world.draw();   
         }
     }, []);
 
@@ -33,9 +34,19 @@ const Canvas = (props:propType) => {
 
     //Function that evolves the map based on conway's rules.
     const evolve = () => {
-        world.evolve();
-        world.setContext(contextRef.current);
-        world.draw();
+        setWorld((prevWorld:World) => {
+            const newCells: Cell[][] = prevWorld.evolve(); 
+            
+            // Redraw all cells after updating state
+            newCells.forEach((row:Cell[])=>row.forEach((elem:Cell) => elem.ctx = contextRef.current))
+            newCells.forEach(row => row.forEach(cell => cell.draw()));
+    
+            // Return a new world object with only cells updated
+            const newWorld = new World(prevWorld.rows, prevWorld.columns, prevWorld.name); // Create a new World instance
+            newWorld.cells = newCells; // Update just the cells field
+            return newWorld;
+        });
+
         //Increase the generation count.
         props.setGeneration((prevG) => prevG + 1);
     };
@@ -45,7 +56,7 @@ const Canvas = (props:propType) => {
 
 
     return(
-        <canvas ref={canvasRef} width={world.width * CELL_WIDTH} height={world.height * CELL_HEIGHT}></canvas>
+        <canvas ref={canvasRef} width={world.columns * CELL_WIDTH} height={world.rows * CELL_HEIGHT}></canvas>
     )
 }
 

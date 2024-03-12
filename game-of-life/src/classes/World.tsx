@@ -6,11 +6,11 @@ interface WorldInterface {
     name: string,
     cells: Cell[][],
     draw(): void,
-    evolve(): void,
+    evolve(): Cell[][],
     setContext(ctx:CanvasRenderingContext2D): void
 }
-const CELL_columns = 50;
-const CELL_rows = 50;
+const CELL_COLUMNS = 50;
+const CELL_ROWS = 50;
 // Define relative positions of neighbors.
 const relativePositions = [
   [-1, -1], [-1, 0], [-1, 1],
@@ -42,16 +42,17 @@ export class World implements WorldInterface{
              const row: Cell[] = [];
              for (let j = 0; j < this.rows; j++) {
                  // Generate a random boolean to determine if the cell is alive or dead
-                 const isAlive = Math.random() > 0.8; // Adjust the probability threshold as needed
-                 const cell: Cell = new Cell(CELL_columns, CELL_rows, x, y, isAlive);
+                 const isAlive = Math.random() > 0.4; // Adjust the probability threshold as needed
+                 const cell: Cell = new Cell(CELL_COLUMNS, CELL_ROWS, x, y, isAlive);
                  //cell.draw();
                  row.push(cell);
-                 x += this.columns;
+                 x += 50;
              }
              newCells.push(row);
-             y += this.rows;
+             y += 50;
              x = 0;
          }
+         console.log(newCells)
          return newCells;
       }
     
@@ -89,10 +90,11 @@ export class World implements WorldInterface{
       }
 
       draw(): void {
-          this.#cells.forEach((row) => row.forEach((cell) => cell.draw));
+          this.#cells.forEach((row) => row.forEach((cell) => cell.draw()));
+          console.log("d")
       }
 
-      evolve(): void {
+      evolve(): Cell[][] {
         const newCells = this.#cells.map((row, i) => {
           return row.map((cell, j) => {
               //Loop over all the neighbours of each cell and find out how many are alive.
@@ -121,7 +123,7 @@ export class World implements WorldInterface{
           });
         });
 
-        this.#cells = newCells;
+        return newCells;
       }
 
       setContext(ctx:CanvasRenderingContext2D): void {
