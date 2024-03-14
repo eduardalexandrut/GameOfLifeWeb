@@ -18,7 +18,7 @@ export class Stack<T> implements StackInterface<T>{
     }
   
     // Push element onto the stack
-    push(element) {
+    push(element: T) {
       this.items.push(element);
     }
   

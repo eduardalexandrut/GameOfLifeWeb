@@ -2,12 +2,15 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { Cell } from "../classes/Cell";
 import { Context } from "../App";
 import { World } from "../classes/World";
+import Stack from "../classes/Stack";
 
 type propType = {
     isPlaying: boolean,
     generation: number,
     setGeneration: React.Dispatch<React.SetStateAction<number>>,
     speed: number,
+    history: Stack<Cell[][]>,
+    setHistory: React.Dispatch<React.SetStateAction<Stack<Cell[][]>>>,
 }
 const CELL_WIDTH = 50;
 const CELL_HEIGHT = 50;

@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import Canvas from "./Canvas";
+import Stack from "../classes/Stack";
+import { Cell } from "../classes/Cell";
 
 const WorldPlayer = (props:any) => {
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -7,6 +9,7 @@ const WorldPlayer = (props:any) => {
     const [speed, setSpeed] = useState<number>(500);
     const [zoom, setZoom] = useState<number>(1);
     const [generation, setGeneration] = useState<number>(0);
+    const [history, setHistory] = useState<Stack<Cell[][]>>(new Stack<Cell[][]>());
 
     const handleIsPlaying = (button) => {
         setIsPlaying((prevPlay) =>!prevPlay);
@@ -40,6 +43,8 @@ const WorldPlayer = (props:any) => {
                 generation = {generation}
                 setGeneration = {setGeneration}
                 speed={speed}
+                history = {history}
+                setHistory = {setHistory}
             />
         </div>
     )
