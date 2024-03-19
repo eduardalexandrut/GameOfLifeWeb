@@ -3,6 +3,7 @@ import { Cell } from "../classes/Cell";
 import { Context } from "../App";
 import { World } from "../classes/World";
 import Stack from "../classes/Stack";
+import { HistoryActions } from "./WorldPlayer";
 
 type propType = {
     isPlaying: boolean,
@@ -11,6 +12,7 @@ type propType = {
     speed: number,
     history: Stack<Cell[][]>,
     setHistory: React.Dispatch<React.SetStateAction<Stack<Cell[][]>>>,
+    historyAction:HistoryActions
 }
 const CELL_WIDTH = 50;
 const CELL_HEIGHT = 50;
@@ -35,8 +37,23 @@ const Canvas = (props:propType) => {
         }
     },[props.isPlaying, props.speed]);
 
+    useEffect(() => {
+        if (!props.isPlaying) {
+            if (props.historyAction == HistoryActions.Backward && props.generation > 0) {
+                /**Get previous state and draw it. */
+                props.setGeneration((prevG) => prevG - 1);
+            } else if (props.historyAction == HistoryActions.Forward && props.generation < props.history.size()){
+                /**Get following state and show it. */
+                props.setGeneration((prevG) => prevG + 1);
+            }
+        }
+    },[props.historyAction])
+
     //Function that evolves the map based on conway's rules.
     const evolve = () => {
+        /*props.setHistory((prevHistory:Stack<Cell[][]>) => {
+            
+        })*/
         setWorld((prevWorld:World) => {
             const newCells: Cell[][] = prevWorld.evolve(); 
             

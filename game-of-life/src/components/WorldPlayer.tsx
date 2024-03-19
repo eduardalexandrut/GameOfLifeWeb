@@ -3,6 +3,10 @@ import Canvas from "./Canvas";
 import Stack from "../classes/Stack";
 import { Cell } from "../classes/Cell";
 
+export enum HistoryActions{
+    Backward,
+    Forward
+}
 const WorldPlayer = (props:any) => {
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
@@ -10,6 +14,7 @@ const WorldPlayer = (props:any) => {
     const [zoom, setZoom] = useState<number>(1);
     const [generation, setGeneration] = useState<number>(0);
     const [history, setHistory] = useState<Stack<Cell[][]>>(new Stack<Cell[][]>());
+    const [historyAction, setHistoryAction] = useState<HistoryActions| null>(null);
 
     const handleIsPlaying = (button) => {
         setIsPlaying((prevPlay) =>!prevPlay);
@@ -45,6 +50,7 @@ const WorldPlayer = (props:any) => {
                 speed={speed}
                 history = {history}
                 setHistory = {setHistory}
+                historyAction={historyAction}
             />
         </div>
     )
