@@ -5,8 +5,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #00072D;
-  color: #EEEEEE;
+  background-color: #00072D !important;
+  color: #EEEEEE !important;
 }
 
 code {
@@ -54,4 +54,44 @@ code {
     background-color: #EEEEEE;
     color: #00072D;
   }
+}
+
+/*World Builder*/
+#builder-form{
+  width: fit-content;
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+#builder-form input{
+  border: none;
+  border-bottom: 1px solid #EEEEEE !important;
+  background-color: #00072D;
+  color: #EEEEEE;
+  width: 100%;
+  height: 7vh;
+  font-size: large;
+}
+#builder-btn-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between !important;
+
+  margin-top: 10vh;
+}
+#builder-btn-container button{
+  border: 1px solid #EEEEEE !important;
+  background-color: #00072D;
+  color: #EEEEEE;
+  width: 100%;
+  height: 7vh;
+  min-width: fit-content;
+  border-radius: 10px;
+  font-size: large;
+}
+#builder-btn-container button:hover {
+  animation: menu-btn-animation 800ms ease;
 }

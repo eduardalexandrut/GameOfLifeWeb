@@ -2,7 +2,11 @@ import { useContext, useRef } from "react"
 import { Context, View } from "../App"
 import { useWorldContext } from "./WorldContext"
 import { World } from "../classes/World"
-
+import FloatingLabel from "react-bootstrap/FloatingLabel";
+import Form from "react-bootstrap/Form";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col"
 
 type propType = {
     view: View,
@@ -28,14 +32,37 @@ const WorldBuilder = (props:propType) => {
     
     return (
         <div id = 'world-builder'>
-            <h1>Create a new world</h1>
-            <form action="" method="">
-                <input ref={nameRef} type="text" name="name" placeholder="world name"/>
-                <input ref={widthRef} type="number" name="width" placeholder="width"/>
-                <input ref={heightRef} type="number" name="height" placeholder="height"/>
-                <button onClick={()=>handleCreate()}>Create</button>
-                <button>Discard</button>
-            </form>
+            <Container>
+                <Row>
+                    <h1>New world</h1>
+                </Row>
+                <Row>
+                    <Col></Col>
+                    <Col sm={6}>
+                        <div id="builder-form">
+                            <input ref={nameRef} type="text" name="name" placeholder="world name"/>
+                            <input ref={widthRef} type="number" name="width" placeholder="width"/>
+                            <input ref={heightRef} type="number" name="height" placeholder="height"/>
+                        </div>
+                    </Col>
+                    <Col></Col>
+                </Row>
+                <Row>
+                    <Col></Col>
+                    <Col sm={6}>
+                    <div id="builder-btn-container">
+                        <Col sm={5}>
+                            <button onClick={()=>handleCreate()}>Create</button>
+                        </Col>
+                        <Col sm={5}>
+                            <button>Discard</button>
+                        </Col>
+                    </div>
+                    </Col>
+                    <Col></Col>
+                </Row>
+            </Container>
+            
         </div>
     )
 }
