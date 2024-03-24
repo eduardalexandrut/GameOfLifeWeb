@@ -76,7 +76,7 @@ export class Cell implements CellInterface {
         this.#ctx.strokeStyle = 'black';
         this.#ctx.strokeRect(this.#posX, this.#posY, this.#width, this.#height);
         if (this.#isAlive) {
-            this.#ctx.fillStyle = '#EEEEEE';
+            this.#ctx.fillStyle = '#D9D9D9';
         } else {
             this.#ctx.fillStyle = '#00072D';
         }

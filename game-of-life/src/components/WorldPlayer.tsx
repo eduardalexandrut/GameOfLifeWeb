@@ -51,6 +51,7 @@ const WorldPlayer = (props:any) => {
                 history = {history}
                 setHistory = {setHistory}
                 historyAction={historyAction}
+                isDrawing={isDrawing}
             />
         </div>
     )

@@ -13,6 +13,7 @@ type propType = {
     history: Stack<Cell[][]>,
     setHistory: React.Dispatch<React.SetStateAction<Stack<Cell[][]>>>,
     historyAction:HistoryActions
+    isDrawing: boolean
 }
 const CELL_WIDTH = 50;
 const CELL_HEIGHT = 50;
@@ -71,12 +72,23 @@ const Canvas = (props:propType) => {
         props.setGeneration((prevG) => prevG + 1);
     };
     
+    //Functions that either draws on the canvas or is used to drag and move around the map.
+    const handleCanvasClick = (e:React.MouseEvent) => {
+        if(!props.isPlaying /*&& props.isDrawing*/) {//Draw action implied.
+            const rect = canvasRef.current.getBoundingClientRect(); 
+            const clientX = e.clientX - rect.left;
+            const clientY = e.clientY - rect.top;
+            const coordX = Math.floor(clientX / CELL_WIDTH );
+            const coordY = Math.floor(clientY / CELL_HEIGHT);
+            console.log(coordX, coordY)
+        }
+    }
     
     
 
 
     return(
-        <canvas ref={canvasRef} width={world.columns * CELL_WIDTH} height={world.rows * CELL_HEIGHT}></canvas>
+        <canvas ref={canvasRef} width={world.columns * CELL_WIDTH} height={world.rows * CELL_HEIGHT} onClick={(e)=>handleCanvasClick(e)}></canvas>
     )
 }
 
