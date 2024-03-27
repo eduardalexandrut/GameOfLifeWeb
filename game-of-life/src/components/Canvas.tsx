@@ -72,16 +72,8 @@ const Canvas = (props:propType) => {
             const clientY = e.clientY - rect.top;
             const coordX = Math.floor(clientX / CELL_WIDTH );
             const coordY = Math.floor(clientY / CELL_HEIGHT);
-            /*setWorld((prevWorld) => {
-                const newCells : Cell[][] = prevWorld.cells;
-                newCells[coordY][coordX].isAlive = !newCells[coordY][coordX].isAlive;
-                 // Redraw all cells after updating state
-                newCells.forEach((row:Cell[])=>row.forEach((elem:Cell) => elem.ctx = contextRef.current))
-                newCells.forEach(row => row.forEach(cell => cell.draw()));
-                 // Return a new world object with only cells updated
-               
-                return {...prevWorld,cells:newCells};
-            })*/
+            world.cells[coordY][coordX].isAlive = ! world.cells[coordY][coordX].isAlive;
+            world.cells[coordY][coordX].draw();
         }
     }
 

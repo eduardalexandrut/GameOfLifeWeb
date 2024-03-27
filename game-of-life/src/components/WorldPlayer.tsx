@@ -32,7 +32,7 @@ const WorldPlayer = (props:any) => {
     }
     return (
         <div>
-            <div>
+            <div id="control-panel">
                 <button onClick = {(e)=>handleIsPlaying(e.target)}>Start</button>
                 <div>
                     Generation:{generation}
@@ -42,6 +42,16 @@ const WorldPlayer = (props:any) => {
                     Animation Speed: {speed} ms
                     <button onClick={()=>decreaseSpeed()}>-</button>
                 </div>
+                <div>
+                    <button>Undo</button>
+                    <button>Redo</button>
+                </div>
+                <div>
+                    <button>Zoom In</button>
+                    <p>100%</p>
+                    <button>Zoom Out</button>
+                </div>
+                <button>Save</button>
             </div>
             <Canvas 
                 isPlaying={isPlaying}

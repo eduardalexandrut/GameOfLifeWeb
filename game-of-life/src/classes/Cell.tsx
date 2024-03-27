@@ -73,12 +73,14 @@ export class Cell implements CellInterface {
             throw new Error('Canvas context is not set.');
         }
 
-        this.#ctx.strokeStyle = 'black';
-        this.#ctx.strokeRect(this.#posX, this.#posY, this.#width, this.#height);
         if (this.#isAlive) {
             this.#ctx.fillStyle = '#D9D9D9';
+            this.#ctx.strokeStyle = '#00072D';
+            this.#ctx.strokeRect(this.#posX, this.#posY, this.#width, this.#height);
         } else {
             this.#ctx.fillStyle = '#00072D';
+            this.#ctx.strokeStyle = '#D9D9D9';
+            this.#ctx.strokeRect(this.#posX, this.#posY, this.#width, this.#height);
         }
         this.#ctx.fillRect(this.#posX, this.#posY, this.#width, this.#height);
     }
