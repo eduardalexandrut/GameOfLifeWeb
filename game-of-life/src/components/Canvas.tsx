@@ -4,6 +4,7 @@ import { Context } from "../App";
 import { World } from "../classes/World";
 import Stack from "../classes/Stack";
 import { HistoryActions } from "./WorldPlayer";
+import { useWorldContext } from "./WorldContext";
 
 type propType = {
     isPlaying: boolean,
@@ -19,7 +20,7 @@ const CELL_WIDTH = 50;
 const CELL_HEIGHT = 50;
 
 const Canvas = (props:propType) => {
-    const [world, setWorld] = useContext(Context);
+    const world = useWorldContext();
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const contextRef = useRef<CanvasRenderingContext2D | null>();
     
@@ -55,18 +56,9 @@ const Canvas = (props:propType) => {
         /*props.setHistory((prevHistory:Stack<Cell[][]>) => {
             
         })*/
-        setWorld((prevWorld:World) => {
-            const newCells: Cell[][] = prevWorld.evolve(); 
-            
-            // Redraw all cells after updating state
-            newCells.forEach((row:Cell[])=>row.forEach((elem:Cell) => elem.ctx = contextRef.current))
-            newCells.forEach(row => row.forEach(cell => cell.draw()));
-    
-            // Return a new world object with only cells updated
-            const newWorld = new World(prevWorld.rows, prevWorld.columns, prevWorld.name); // Create a new World instance
-            newWorld.cells = newCells; // Update just the cells field
-            return newWorld;
-        });
+        world.evolve();
+        world.cells.forEach((row:Cell[]) => row.forEach((cell:Cell) => cell.ctx = contextRef.current))
+        world.cells.forEach((row:Cell[]) => row.forEach((cell:Cell) => cell.draw()));
 
         //Increase the generation count.
         props.setGeneration((prevG) => prevG + 1);
@@ -80,11 +72,18 @@ const Canvas = (props:propType) => {
             const clientY = e.clientY - rect.top;
             const coordX = Math.floor(clientX / CELL_WIDTH );
             const coordY = Math.floor(clientY / CELL_HEIGHT);
-            console.log(coordX, coordY)
+            /*setWorld((prevWorld) => {
+                const newCells : Cell[][] = prevWorld.cells;
+                newCells[coordY][coordX].isAlive = !newCells[coordY][coordX].isAlive;
+                 // Redraw all cells after updating state
+                newCells.forEach((row:Cell[])=>row.forEach((elem:Cell) => elem.ctx = contextRef.current))
+                newCells.forEach(row => row.forEach(cell => cell.draw()));
+                 // Return a new world object with only cells updated
+               
+                return {...prevWorld,cells:newCells};
+            })*/
         }
     }
-    
-    
 
 
     return(

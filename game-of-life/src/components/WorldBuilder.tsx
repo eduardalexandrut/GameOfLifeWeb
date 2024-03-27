@@ -1,12 +1,13 @@
 import { useContext, useRef } from "react"
 import { Context, View } from "../App"
-import { useWorldContext } from "./WorldContext"
+import { useSetWorldContext, useWorldContext, WorldContext } from "./WorldContext"
 import { World } from "../classes/World"
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col"
+
 
 type propType = {
     view: View,
@@ -18,14 +19,18 @@ const WorldBuilder = (props:propType) => {
     const widthRef = useRef<HTMLInputElement>(null);
     const heightRef = useRef<HTMLInputElement>(null);
     const nameRef = useRef<HTMLInputElement>(null);
-    const [world, setWorld] = useContext(Context);
+    const world = useWorldContext();
+    const setWorld = useSetWorldContext();
+   // const {world, setWorld} = useContext(WorldContext);
 
     const handleCreate = () => {
         if (widthRef.current && heightRef.current && nameRef.current) {
             const columns = parseInt(widthRef.current.value);
             const rows = parseInt(heightRef.current.value);
             const name = nameRef.current.value;
-            setWorld(new World(columns, rows, name));
+            const newWorld = new World(columns, rows, name);
+            //world = newWorld
+            setWorld(newWorld);
             props.setView(View.Player);
         }
     }

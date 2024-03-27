@@ -6,7 +6,7 @@ interface WorldInterface {
     name: string,
     cells: Cell[][],
     draw(): void,
-    evolve(): Cell[][],
+    evolve(): void,
     setContext(ctx:CanvasRenderingContext2D): void
 }
 const CELL_COLUMNS = 50;
@@ -94,7 +94,7 @@ export class World implements WorldInterface{
           console.log("d")
       }
 
-      evolve(): Cell[][] {
+      evolve(): void {
         const newCells = this.#cells.map((row, i) => {
           return row.map((cell, j) => {
               //Loop over all the neighbours of each cell and find out how many are alive.
@@ -123,7 +123,7 @@ export class World implements WorldInterface{
           });
         });
 
-        return newCells;
+        this.#cells = newCells;
       }
 
       setContext(ctx:CanvasRenderingContext2D): void {

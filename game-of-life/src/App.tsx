@@ -53,11 +53,16 @@ function App() {
   }
 
   return (
-    <Context.Provider value={[world, setWorld]}>
+    /*<Context.Provider value={[world, setWorld]}>
       <div className="App">
         {content}
       </div>
-    </Context.Provider>
+    </Context.Provider>*/
+    <WorldProvider>
+      <div className="App">
+        {content}
+      </div>
+    </WorldProvider>
   );
 }
 
