@@ -30,6 +30,16 @@ const WorldPlayer = (props:any) => {
             setSpeed((prevS) => prevS - 100);
         }
     }
+
+    const zoomIn = () => {
+        setZoom(prevZoom => prevZoom + 0.1)
+    }
+
+    const zoomOut = () => {
+        if (zoom > 0.2) {
+            setZoom( prevZoom => prevZoom - 0.1)
+        }
+    }
     return (
         <div>
             <div id="control-panel">
@@ -38,18 +48,18 @@ const WorldPlayer = (props:any) => {
                     Generation:{generation}
                 </div>
                 <div>
-                    <button onClick={()=>increaseSpeed()}>+</button>
-                    Animation Speed: {speed} ms
                     <button onClick={()=>decreaseSpeed()}>-</button>
+                    Animation Speed: {speed} ms
+                    <button onClick={()=>increaseSpeed()}>+</button>
                 </div>
                 <div>
                     <button>Undo</button>
                     <button>Redo</button>
                 </div>
                 <div>
-                    <button>Zoom In</button>
-                    <p>100%</p>
-                    <button>Zoom Out</button>
+                    <button onClick={()=>zoomIn()}>Zoom In</button>
+                    <p>{Math.round(zoom * 100)}%</p>
+                    <button onClick={()=>zoomOut()}>Zoom Out</button>
                 </div>
                 <button>Save</button>
             </div>
