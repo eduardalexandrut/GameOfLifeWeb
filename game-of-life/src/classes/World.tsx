@@ -91,10 +91,10 @@ export class World implements WorldInterface{
 
       draw(): void {
           this.#cells.forEach((row) => row.forEach((cell) => cell.draw()));
-          console.log("d")
       }
 
       evolve(): void {
+        /**TODO: add previous state to stack */
         const newCells = this.#cells.map((row, i) => {
           return row.map((cell, j) => {
               //Loop over all the neighbours of each cell and find out how many are alive.
@@ -124,6 +124,19 @@ export class World implements WorldInterface{
         });
 
         this.#cells = newCells;
+      }
+
+      zoom(zoomFactor:number): void {
+       const newCells = this.#cells.map((row, i) => {
+        return row.map((cell, j) => {
+            const new_width = CELL_COLUMNS * zoomFactor;
+            const new_height = CELL_ROWS * zoomFactor;
+            const new_posX = j * new_width;  // Position based on column index
+            const new_posY = i * new_height; // Position based on row index
+            return new Cell(new_width, new_height, new_posX, new_posY, cell.isAlive);
+        });
+    });
+    this.#cells = newCells;
       }
 
       setContext(ctx:CanvasRenderingContext2D): void {

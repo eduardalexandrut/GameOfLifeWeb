@@ -72,6 +72,7 @@ const WorldPlayer = (props:any) => {
                 setHistory = {setHistory}
                 historyAction={historyAction}
                 isDrawing={isDrawing}
+                zoom = {zoom}
             />
         </div>
     )

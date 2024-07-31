@@ -14,7 +14,8 @@ type propType = {
     history: Stack<Cell[][]>,
     setHistory: React.Dispatch<React.SetStateAction<Stack<Cell[][]>>>,
     historyAction:HistoryActions
-    isDrawing: boolean
+    isDrawing: boolean,
+    zoom: number
 }
 const CELL_WIDTH = 50;
 const CELL_HEIGHT = 50;
@@ -51,6 +52,14 @@ const Canvas = (props:propType) => {
         }
     },[props.historyAction])
 
+    useEffect(() => {
+        console.log("zoom")
+        contextRef.current.clearRect(0, 0, contextRef.current.canvas.width, contextRef.current.canvas.height);
+        world.zoom(props.zoom)
+        world.cells.forEach((row:Cell[]) => row.forEach((cell:Cell) => cell.ctx = contextRef.current))
+        world.cells.forEach((row:Cell[]) => row.forEach((cell:Cell) => cell.draw()));
+    },[props.zoom])
+
     //Function that evolves the map based on conway's rules.
     const evolve = () => {
         /*props.setHistory((prevHistory:Stack<Cell[][]>) => {
@@ -70,16 +79,17 @@ const Canvas = (props:propType) => {
             const rect = canvasRef.current.getBoundingClientRect(); 
             const clientX = e.clientX - rect.left;
             const clientY = e.clientY - rect.top;
-            const coordX = Math.floor(clientX / CELL_WIDTH );
-            const coordY = Math.floor(clientY / CELL_HEIGHT);
+            const coordX = Math.floor(clientX / (CELL_WIDTH * props.zoom) );
+            const coordY = Math.floor(clientY / (CELL_HEIGHT * props.zoom));
             world.cells[coordY][coordX].isAlive = ! world.cells[coordY][coordX].isAlive;
             world.cells[coordY][coordX].draw();
         }
     }
 
 
+
     return(
-        <canvas ref={canvasRef} width={world.columns * CELL_WIDTH} height={world.rows * CELL_HEIGHT} onClick={(e)=>handleCanvasClick(e)}></canvas>
+        <canvas ref={canvasRef} width={world.columns * CELL_WIDTH * props.zoom} height={world.rows * CELL_HEIGHT * props.zoom} onClick={(e)=>handleCanvasClick(e)}></canvas>
     )
 }
 
