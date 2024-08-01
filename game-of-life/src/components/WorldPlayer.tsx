@@ -3,9 +3,9 @@ import Canvas from "./Canvas";
 import Stack from "../classes/Stack";
 import { Cell } from "../classes/Cell";
 
-export enum HistoryActions{
-    Backward,
-    Forward
+export enum Actions{
+    UNDO,
+    REDO
 }
 const WorldPlayer = (props:any) => {
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -14,7 +14,7 @@ const WorldPlayer = (props:any) => {
     const [zoom, setZoom] = useState<number>(1);
     const [generation, setGeneration] = useState<number>(0);
     const [history, setHistory] = useState<Stack<Cell[][]>>(new Stack<Cell[][]>());
-    const [historyAction, setHistoryAction] = useState<HistoryActions| null>(null);
+    const [historyAction, setHistoryAction] = useState<Actions| null>(null);
 
     const handleIsPlaying = (button) => {
         setIsPlaying((prevPlay) =>!prevPlay);
@@ -53,8 +53,8 @@ const WorldPlayer = (props:any) => {
                     <button onClick={()=>increaseSpeed()}>+</button>
                 </div>
                 <div>
-                    <button>Undo</button>
-                    <button>Redo</button>
+                    <button onClick={()=>setHistoryAction(Actions.UNDO)}>Undo</button>
+                    <button onClick={()=>setHistoryAction(Actions.REDO)}>Redo</button>
                 </div>
                 <div>
                     <button onClick={()=>zoomIn()}>Zoom In</button>

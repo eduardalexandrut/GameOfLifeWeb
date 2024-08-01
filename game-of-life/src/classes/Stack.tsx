@@ -1,37 +1,37 @@
 import { Cell } from "./Cell";
 
-interface StackInterface<T> {
-    items: Array<T>,
-    push(element:T): void,
-    pop(): T | string,
-    peek(): T,
+interface StackInterface {
+    items: Array<Cell[][]>,
+    push(element:Cell[][]): void,
+    pop(): Cell[][],
+    peek(): Cell[][],
     isEmpty(): boolean,
     size(): number,
     clear(): void,
     printStack(): string
 }
 
-export class Stack<T> implements StackInterface<T>{
-    items: T[]
+export class Stack<T> implements StackInterface{
+    items: Array<Cell[][]>
     constructor() {
       this.items = [];
     }
   
     // Push element onto the stack
-    push(element: T) {
+    push(element: Cell[][]) {
       this.items.push(element);
     }
   
     // Remove and return the top element from the stack
-    pop(): T | string {
+    pop(): Cell[][] {
       if (this.isEmpty()) {
-        return "Underflow"; // Stack is empty
+        return []; // Stack is empty
       }
       return this.items.pop();
     }
   
     // Return the top element of the stack without removing it
-    peek():T {
+    peek():Cell[][] {
       return this.items[this.items.length - 1];
     }
   

@@ -1,4 +1,5 @@
 import { Cell } from "./Cell";
+import Stack from "./Stack";
 
 interface WorldInterface {
     columns: number,
@@ -24,8 +25,10 @@ export class World implements WorldInterface{
     #rows: number;
     #name: string;
     #cells: Cell[][];
+    #history: Stack<Cell[][]>;
 
     constructor(columns: number, rows: number, name: string) {
+        this.#history = new Stack<Cell[][]>
         this.#columns = columns;
         this.#rows = rows;
         this.#name = name;
@@ -89,12 +92,17 @@ export class World implements WorldInterface{
         this.#cells = value;
       }
 
+      get history(): Stack<Cell[][]> {
+        return this.#history;
+      }
+
       draw(): void {
           this.#cells.forEach((row) => row.forEach((cell) => cell.draw()));
       }
 
       evolve(): void {
-        /**TODO: add previous state to stack */
+        const prevState = this.#cells
+        this.#history.push(prevState)
         const newCells = this.#cells.map((row, i) => {
           return row.map((cell, j) => {
               //Loop over all the neighbours of each cell and find out how many are alive.
@@ -127,16 +135,40 @@ export class World implements WorldInterface{
       }
 
       zoom(zoomFactor:number): void {
-       const newCells = this.#cells.map((row, i) => {
-        return row.map((cell, j) => {
-            const new_width = CELL_COLUMNS * zoomFactor;
-            const new_height = CELL_ROWS * zoomFactor;
-            const new_posX = j * new_width;  // Position based on column index
-            const new_posY = i * new_height; // Position based on row index
-            return new Cell(new_width, new_height, new_posX, new_posY, cell.isAlive);
+        const newCells = this.#cells.map((row, i) => {
+          return row.map((cell, j) => {
+              const new_width = CELL_COLUMNS * zoomFactor;
+              const new_height = CELL_ROWS * zoomFactor;
+              const new_posX = j * new_width;  // Position based on column index
+              const new_posY = i * new_height; // Position based on row index
+              return new Cell(new_width, new_height, new_posX, new_posY, cell.isAlive);
+          });
         });
-    });
-    this.#cells = newCells;
+        this.#cells = newCells;
+      }
+
+      saveState(): void {
+        // Create a deep copy of the current state
+        const currentState = this.#cells.map(row => row.map(cell => cell.clone()));
+        this.#history.push(currentState);
+    }
+
+    undo(): void {
+      if (this.#history.size() > 0) {
+          const lastState = this.#history.pop();
+          if (lastState) {
+              this.#cells = lastState;
+          }
+          console.log(`undo ${this.#history.size()}`);
+      }
+    }
+
+      redo(): void {
+        if (this.#history.size() <= 0) {
+          const lastState: Cell[][] = this.#history.pop()
+          this.#cells = lastState
+          console.log(`redo ${this.#history.size()}`)
+        }
       }
 
       setContext(ctx:CanvasRenderingContext2D): void {

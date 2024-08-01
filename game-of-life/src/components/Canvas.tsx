@@ -3,7 +3,7 @@ import { Cell } from "../classes/Cell";
 import { Context } from "../App";
 import { World } from "../classes/World";
 import Stack from "../classes/Stack";
-import { HistoryActions } from "./WorldPlayer";
+import {Actions } from "./WorldPlayer";
 import { useWorldContext } from "./WorldContext";
 
 type propType = {
@@ -13,7 +13,7 @@ type propType = {
     speed: number,
     history: Stack<Cell[][]>,
     setHistory: React.Dispatch<React.SetStateAction<Stack<Cell[][]>>>,
-    historyAction:HistoryActions
+    historyAction: Actions
     isDrawing: boolean,
     zoom: number
 }
@@ -42,13 +42,7 @@ const Canvas = (props:propType) => {
 
     useEffect(() => {
         if (!props.isPlaying) {
-            if (props.historyAction == HistoryActions.Backward && props.generation > 0) {
-                /**Get previous state and draw it. */
-                props.setGeneration((prevG) => prevG - 1);
-            } else if (props.historyAction == HistoryActions.Forward && props.generation < props.history.size()){
-                /**Get following state and show it. */
-                props.setGeneration((prevG) => prevG + 1);
-            }
+            handleUndoRedo(props.historyAction)
         }
     },[props.historyAction])
 
@@ -60,11 +54,10 @@ const Canvas = (props:propType) => {
         world.cells.forEach((row:Cell[]) => row.forEach((cell:Cell) => cell.draw()));
     },[props.zoom])
 
+
     //Function that evolves the map based on conway's rules.
     const evolve = () => {
-        /*props.setHistory((prevHistory:Stack<Cell[][]>) => {
-            
-        })*/
+        console.log(world.history.size())
         world.evolve();
         world.cells.forEach((row:Cell[]) => row.forEach((cell:Cell) => cell.ctx = contextRef.current))
         world.cells.forEach((row:Cell[]) => row.forEach((cell:Cell) => cell.draw()));
@@ -83,6 +76,26 @@ const Canvas = (props:propType) => {
             const coordY = Math.floor(clientY / (CELL_HEIGHT * props.zoom));
             world.cells[coordY][coordX].isAlive = ! world.cells[coordY][coordX].isAlive;
             world.cells[coordY][coordX].draw();
+        }
+    }
+
+    //Function that handles undo/redo actions.
+    const handleUndoRedo = (action:Actions) => {
+        if(action == Actions.UNDO) {
+            props.setGeneration(prevGeneration => prevGeneration - 1)
+            world.undo()
+        } else if (action == Actions.REDO) {
+            props.setGeneration(prevGeneration => prevGeneration + 1)
+            world.redo()
+        }
+
+        const context = contextRef.current;
+        if (context) {
+            context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+            world.cells.forEach((row: Cell[]) => row.forEach((cell: Cell) => {
+                cell.ctx = context;
+                cell.draw();
+            }));
         }
     }
 

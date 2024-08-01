@@ -8,6 +8,7 @@ interface CellInterface  {
     isAlive: boolean;
     ctx: CanvasRenderingContext2D | null;
     draw(): void;/*** function to draw a cell on the canvas(ctx).*/
+    clone(): Cell
 }
 export class Cell implements CellInterface {
     #width: number;
@@ -83,6 +84,10 @@ export class Cell implements CellInterface {
             this.#ctx.strokeRect(this.#posX, this.#posY, this.#width, this.#height);
         }
         this.#ctx.fillRect(this.#posX, this.#posY, this.#width, this.#height);
+    }
+
+    clone(): Cell {
+        return new Cell(this.width, this.height, this.posX, this.posY, this.isAlive);
     }
 }
 
