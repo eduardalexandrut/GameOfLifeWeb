@@ -13,8 +13,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+ul{
+  list-style: none;
+  padding: 0 !important;
+}
 #menu {
-  margin-top: 20vh;
   margin-left: auto;
   margin-right: auto;
   position: relative;
@@ -22,6 +25,11 @@ code {
   display: flex;
   flex-direction: column;
   gap: 40px;
+}
+
+#menu-title{
+  margin-top: 10vh;
+  margin-bottom: 15vh;
 }
 
 #menu-title p:first-child {
@@ -35,10 +43,10 @@ code {
   border: 1px solid #EEEEEE !important;
   background-color: #00072D;
   color: #EEEEEE;
-  width: 20vw;
-  height: 7vh;
+  width: 22.5vw;
+  height: 8vh;
   min-width: fit-content;
-  border-radius: 10px;
+  border-radius: 15px;
   font-size: large;
 }
 #menu button:hover {
@@ -95,12 +103,41 @@ code {
 #builder-btn-container button:hover {
   animation: menu-btn-animation 800ms ease;
 }
-/*World layer*/
+/*World player*/
 #control-panel {
   width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
+  background-color: #011930;
+  padding: 25px 50px 25px 50px;
+}
+#startBtn{
+  width: 5vw;
+  height: 40px;
+  min-width: fit-content;
+  border: 2px solid white;
+  border-radius: 20px;
+  background-color: transparent;
+  color: white;
+}
+#speedBox, #zoomBox{
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+#genBox {
+  flex-direction: column;
+  margin: 0;
+}
+.control-btn{
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: transparent;
+  border: 2px solid white;
+  color: white;
 }
 canvas {
   border-color: #D9D9D9 !important;

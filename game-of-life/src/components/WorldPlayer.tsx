@@ -43,23 +43,36 @@ const WorldPlayer = (props:any) => {
     return (
         <div>
             <div id="control-panel">
-                <button onClick = {(e)=>handleIsPlaying(e.target)}>Start</button>
-                <div>
-                    Generation:{generation}
+                <button id="startBtn" onClick = {(e)=>handleIsPlaying(e.target)}>Start</button>
+                <div id="genBox">
+                    <ul>
+                        <li>{generation}</li>
+                        <li>Generation</li>
+                    </ul>
                 </div>
-                <div>
-                    <button onClick={()=>decreaseSpeed()}>-</button>
-                    Animation Speed: {speed} ms
-                    <button onClick={()=>increaseSpeed()}>+</button>
+                <div id="speedBox">
+                    <button className="control-btn" onClick={()=>decreaseSpeed()}>-</button>
+           
+                        <ul>
+                            <li>{speed}ms</li>
+                            <li>Speed</li>
+                        </ul>
+                   
+                    <button className="control-btn" onClick={()=>increaseSpeed()}>+</button>
+                </div>
+                <div id="zoomBox">
+                    <button className="control-btn" onClick={()=>zoomOut()}>-</button>
+             
+                        <ul>
+                            <li>{Math.round(zoom * 100)}%</li>
+                            <li>Zoom</li>
+                        </ul>
+                
+                    <button className="control-btn" onClick={()=>zoomIn()}>+</button>
                 </div>
                 <div>
                     <button onClick={()=>setHistoryAction(Actions.UNDO)}>Undo</button>
                     <button onClick={()=>setHistoryAction(Actions.REDO)}>Redo</button>
-                </div>
-                <div>
-                    <button onClick={()=>zoomIn()}>Zoom In</button>
-                    <p>{Math.round(zoom * 100)}%</p>
-                    <button onClick={()=>zoomOut()}>Zoom Out</button>
                 </div>
                 <button>Save</button>
             </div>
