@@ -43,7 +43,7 @@ const WorldPlayer = (props:any) => {
     return (
         <div>
             <div id="control-panel">
-                <button id="startBtn" onClick = {(e)=>handleIsPlaying(e.target)}>Start</button>
+                <button className="startBtn" onClick = {(e)=>handleIsPlaying(e.target)}>Start</button>
                 <div id="genBox">
                     <ul>
                         <li>{generation}</li>
@@ -54,7 +54,7 @@ const WorldPlayer = (props:any) => {
                     <button className="control-btn" onClick={()=>decreaseSpeed()}>-</button>
            
                         <ul>
-                            <li>{speed}ms</li>
+                            <li>{speed}<span> ms</span></li>
                             <li>Speed</li>
                         </ul>
                    
@@ -64,17 +64,20 @@ const WorldPlayer = (props:any) => {
                     <button className="control-btn" onClick={()=>zoomOut()}>-</button>
              
                         <ul>
-                            <li>{Math.round(zoom * 100)}%</li>
+                            <li>{Math.round(zoom * 100)} <span>%</span></li>
                             <li>Zoom</li>
                         </ul>
                 
                     <button className="control-btn" onClick={()=>zoomIn()}>+</button>
                 </div>
-                <div>
-                    <button onClick={()=>setHistoryAction(Actions.UNDO)}>Undo</button>
-                    <button onClick={()=>setHistoryAction(Actions.REDO)}>Redo</button>
+                <div id="undoRedoBox"> 
+                    <button className="startBtn" onClick={()=>setHistoryAction(Actions.UNDO)}>Undo</button>
+                    <button className="startBtn" onClick={()=>setHistoryAction(Actions.REDO)}>Redo</button>
                 </div>
-                <button>Save</button>
+                <button className="startBtn" id="showgridBtn">
+                    Show Grid
+                </button>
+                <button id="saveBtn">Save</button>
             </div>
             <Canvas 
                 isPlaying={isPlaying}

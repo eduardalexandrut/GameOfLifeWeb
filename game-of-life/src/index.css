@@ -105,15 +105,34 @@ ul{
 }
 /*World player*/
 #control-panel {
-  width: 100%;
+  width: 100vw;
+  min-width: fit-content;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   background-color: #011930;
   padding: 25px 50px 25px 50px;
+  border-bottom: 2px solid white;
+  margin-bottom: 10vh;
 }
-#startBtn{
+#control-panel ul {
+ margin-bottom: 0;
+}
+#control-panel li{
+  line-height: 20px;
+}
+#control-panel li:last-child {
+  opacity: .6;
+  font-size: 14px;
+}
+#control-panel li:first-child {
+  font-size: 22px;
+}
+#control-panel ul span{
+  font-size: 14px;
+}
+.startBtn{
   width: 5vw;
   height: 40px;
   min-width: fit-content;
@@ -123,7 +142,10 @@ ul{
   color: white;
 }
 #speedBox, #zoomBox{
+  width: 11% !important;
+  min-width: fit-content;
   display: flex;
+  justify-content: space-between;
   gap: 20px;
   align-items: center;
 }
@@ -132,12 +154,25 @@ ul{
   margin: 0;
 }
 .control-btn{
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
   background-color: transparent;
   border: 2px solid white;
   color: white;
+}
+#undoRedoBox {
+  width: 12%;
+  min-width: fit-content;
+  display: flex;
+  justify-content: space-between;
+}
+#saveBtn {
+  width: 5vw;
+  height: 40px;
+  min-width: fit-content;
+  border-radius: 15px;
+  background-color: white;
 }
 canvas {
   border-color: #D9D9D9 !important;
