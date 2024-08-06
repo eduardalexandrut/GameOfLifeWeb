@@ -25,14 +25,16 @@ export class World implements WorldInterface{
     #rows: number;
     #name: string;
     #cells: Cell[][];
-    #history: Stack<Cell[][]>;
+    #undoStack: Stack<Cell[][]>;
+    #redoStack: Stack<Cell[][]>
 
     constructor(columns: number, rows: number, name: string) {
-        this.#history = new Stack<Cell[][]>
-        this.#columns = columns;
-        this.#rows = rows;
-        this.#name = name;
-        this.#cells = this.#initialize_random();
+      this.#columns = columns;
+      this.#rows = rows;
+      this.#name = name;
+      this.#cells = this.#initialize_random();
+      this.#undoStack = new Stack<Cell[][]>
+      this.#redoStack = new Stack<Cell[][]>
       }
       
       #initialize_random(): Cell[][] {
@@ -92,8 +94,12 @@ export class World implements WorldInterface{
         this.#cells = value;
       }
 
-      get history(): Stack<Cell[][]> {
-        return this.#history;
+      get undoStack(): Stack<Cell[][]> {
+        return this.#undoStack;
+      }
+
+      get redoStack(): Stack<Cell[][]> {
+        return this.#redoStack;
       }
 
       draw(): void {
@@ -102,7 +108,7 @@ export class World implements WorldInterface{
 
       evolve(): void {
         const prevState = this.#cells
-        this.#history.push(prevState)
+        this.#undoStack.push(prevState)
         const newCells = this.#cells.map((row, i) => {
           return row.map((cell, j) => {
               //Loop over all the neighbours of each cell and find out how many are alive.
@@ -147,29 +153,40 @@ export class World implements WorldInterface{
         this.#cells = newCells;
       }
 
-      saveState(): void {
+      /*saveState(): void {
         // Create a deep copy of the current state
         const currentState = this.#cells.map(row => row.map(cell => cell.clone()));
-        this.#history.push(currentState);
-    }
+        this.#undo.push(currentState);
+    }*/
 
     undo(): void {
-      if (this.#history.size() > 0) {
-          const lastState = this.#history.pop();
+      if (this.#undoStack.size() > 0) {
+          const lastState = this.#undoStack.pop();
+          const currentState = this.#cells;
+          this.#redoStack.push(currentState);
+
           if (lastState) {
               this.#cells = lastState;
           }
-          console.log(`undo ${this.#history.size()}`);
+          console.log(`undo ${this.#undoStack.size()}`);
       }
     }
 
-      redo(): void {
-        if (this.#history.size() <= 0) {
-          const lastState: Cell[][] = this.#history.pop()
-          this.#cells = lastState
-          console.log(`redo ${this.#history.size()}`)
-        }
+    redo(): void {
+       if (this.#redoStack.size() > 0) {
+          const lastState: Cell[][] = this.#redoStack.pop()
+          const currentState = this.#cells;
+          this.#undoStack.push(currentState)
+          if (lastState) {
+            this.#cells = lastState
+          }
+          console.log(`redo ${this.#redoStack.size()}`)
       }
+    }
+
+    emptyRedoStack(): void {
+      this.#redoStack = new Stack<Cell[][]>;
+    }
 
       setContext(ctx:CanvasRenderingContext2D): void {
           this.#cells.forEach((row) =>row.forEach((cell) => cell.ctx = ctx));

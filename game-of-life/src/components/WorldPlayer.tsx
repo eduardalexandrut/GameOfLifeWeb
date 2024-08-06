@@ -1,7 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Canvas from "./Canvas";
 import Stack from "../classes/Stack";
 import { Cell } from "../classes/Cell";
+import UndoIcon from '@mui/icons-material/Undo';
+import RedoIcon from '@mui/icons-material/Redo';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import PauseIcon from '@mui/icons-material/Pause';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 export enum Actions{
     UNDO,
@@ -15,6 +20,7 @@ const WorldPlayer = (props:any) => {
     const [generation, setGeneration] = useState<number>(0);
     const [history, setHistory] = useState<Stack<Cell[][]>>(new Stack<Cell[][]>());
     const [historyAction, setHistoryAction] = useState<Actions| null>(null);
+    const canvasRef = useRef(null)
 
     const handleIsPlaying = (button) => {
         setIsPlaying((prevPlay) =>!prevPlay);
@@ -40,6 +46,7 @@ const WorldPlayer = (props:any) => {
             setZoom( prevZoom => prevZoom - 0.1)
         }
     }
+
     return (
         <div>
             <div id="control-panel">
@@ -71,8 +78,8 @@ const WorldPlayer = (props:any) => {
                     <button className="control-btn" onClick={()=>zoomIn()}>+</button>
                 </div>
                 <div id="undoRedoBox"> 
-                    <button className="startBtn" onClick={()=>setHistoryAction(Actions.UNDO)}>Undo</button>
-                    <button className="startBtn" onClick={()=>setHistoryAction(Actions.REDO)}>Redo</button>
+                    <button className="startBtn" onClick={()=>canvasRef.current.handleUndoRedo(Actions.UNDO)}>Undo</button>
+                    <button className="startBtn" onClick={()=>canvasRef.current.handleUndoRedo(Actions.REDO)}>Redo</button>
                 </div>
                 <button className="startBtn" id="showgridBtn">
                     Show Grid
@@ -80,6 +87,7 @@ const WorldPlayer = (props:any) => {
                 <button id="saveBtn">Save</button>
             </div>
             <Canvas 
+                ref = {canvasRef}
                 isPlaying={isPlaying}
                 generation = {generation}
                 setGeneration = {setGeneration}
