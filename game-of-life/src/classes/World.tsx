@@ -188,8 +188,18 @@ export class World implements WorldInterface{
       this.#redoStack = new Stack<Cell[][]>;
     }
 
-      setContext(ctx:CanvasRenderingContext2D): void {
-          this.#cells.forEach((row) =>row.forEach((cell) => cell.ctx = ctx));
-      }
+    setContext(ctx:CanvasRenderingContext2D): void {
+        this.#cells.forEach((row) =>row.forEach((cell) => cell.ctx = ctx));
+    }
+
+    convertToJSON(): string {
+      const world:string = JSON.stringify({
+        name:this.#name,
+        columns:this.#columns,
+        rows:this.#rows,
+        cells:this.#cells
+      })
+      return world;
+    }
 
 }

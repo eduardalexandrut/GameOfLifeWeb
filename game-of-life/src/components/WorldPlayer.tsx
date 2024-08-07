@@ -7,6 +7,7 @@ import RedoIcon from '@mui/icons-material/Redo';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import PauseIcon from '@mui/icons-material/Pause';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { useWorldContext } from "./WorldContext";
 
 export enum Actions{
     UNDO,
@@ -20,7 +21,8 @@ const WorldPlayer = (props:any) => {
     const [generation, setGeneration] = useState<number>(0);
     const [history, setHistory] = useState<Stack<Cell[][]>>(new Stack<Cell[][]>());
     const [historyAction, setHistoryAction] = useState<Actions| null>(null);
-    const canvasRef = useRef(null)
+    const canvasRef = useRef(null);
+    const world = useWorldContext();
 
     const handleIsPlaying = (button) => {
         setIsPlaying((prevPlay) =>!prevPlay);
@@ -46,6 +48,28 @@ const WorldPlayer = (props:any) => {
             setZoom( prevZoom => prevZoom - 0.1)
         }
     }
+
+    const saveWorld = async () => {
+        const jsonData = world.convertToJSON();
+        console.log(jsonData)
+        try {
+            const response = await fetch('http://localhost:5000/upload-world', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: jsonData,
+            });
+        
+            if (response.ok) {
+              console.log('File uploaded successfully');
+            } else {
+              console.error('Error uploading file');
+            }
+          } catch (error) {
+            console.error('Error:', error);
+          }
+        };
 
     return (
         <div>
@@ -84,7 +108,7 @@ const WorldPlayer = (props:any) => {
                 <button className="startBtn" id="showgridBtn">
                     Show Grid
                 </button>
-                <button id="saveBtn">Save</button>
+                <button id="saveBtn" onClick={()=>saveWorld()}>Save</button>
             </div>
             <Canvas 
                 ref = {canvasRef}
