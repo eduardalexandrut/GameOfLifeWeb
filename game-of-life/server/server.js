@@ -20,7 +20,7 @@ app.post('/upload-world', (req, res) => {
     return res.status(400).send('Invalid data: "name" property is required');
   }
 
-  const filePath = path.join(__dirname, '../game-of-life-data', jsonData.name);
+  const filePath = path.join(__dirname, '../game-of-life-data', `${jsonData.name}.json`);
   const fileDir = path.dirname(filePath);
 
   // Create directory if it doesn't exist

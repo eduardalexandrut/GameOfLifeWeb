@@ -108,7 +108,7 @@ const WorldPlayer = (props:any) => {
                 <button className="startBtn" id="showgridBtn">
                     Show Grid
                 </button>
-                <button id="saveBtn" onClick={()=>saveWorld()}>Save</button>
+                <button id="saveBtn" onClick={saveWorld}>Save</button>
             </div>
             <Canvas 
                 ref = {canvasRef}

@@ -197,7 +197,7 @@ export class World implements WorldInterface{
         name:this.#name,
         columns:this.#columns,
         rows:this.#rows,
-        cells:this.#cells
+        cells:this.#cells.map((row)=> row.map((cell)=>cell.convertToJSON()))
       })
       return world;
     }

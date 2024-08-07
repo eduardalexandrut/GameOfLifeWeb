@@ -89,6 +89,17 @@ export class Cell implements CellInterface {
     clone(): Cell {
         return new Cell(this.width, this.height, this.posX, this.posY, this.isAlive);
     }
+
+    convertToJSON(): string {
+        return JSON.stringify({
+            width: this.#width,
+            height: this.#height,
+            posX: this.#posX,
+            posY: this.#posY,
+            isAlive: this.#isAlive,
+            ctx: this.#ctx
+        })
+    }
 }
 
 export{};
