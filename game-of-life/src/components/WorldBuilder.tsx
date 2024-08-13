@@ -1,4 +1,4 @@
-import { useContext, useRef } from "react"
+import { useContext, useRef, useState } from "react"
 import { Context, View } from "../App"
 import { useSetWorldContext, useWorldContext, WorldContext } from "./WorldContext"
 import { World } from "../classes/World"
@@ -21,7 +21,8 @@ const WorldBuilder = (props:propType) => {
     const nameRef = useRef<HTMLInputElement>(null);
     const world = useWorldContext();
     const setWorld = useSetWorldContext();
-   // const {world, setWorld} = useContext(WorldContext);
+   const [width, setWidth] = useState(2);
+   const [height, setHeight] = useState(2);
 
     const handleCreate = () => {
         if (widthRef.current && heightRef.current && nameRef.current) {
@@ -34,35 +35,57 @@ const WorldBuilder = (props:propType) => {
             props.setView(View.Player);
         }
     }
+
+    const handleWidthChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+        setWidth(Number(e.target.value))
+    }
+
+    const handleHeightChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+        setHeight(Number(e.target.value))
+    }
     
     return (
         <div id = 'world-builder'>
             <Container>
-                <Row>
-                    <h1>New world</h1>
+                <Row className="mt-5 mb-5">
+                    <h1 >New world</h1>
                 </Row>
                 <Row>
                     <Col></Col>
                     <Col sm={6}>
-                        <div id="builder-form">
-                            <input ref={nameRef} type="text" name="name" placeholder="world name"/>
-                            <input ref={widthRef} type="number" name="width" placeholder="width"/>
-                            <input ref={heightRef} type="number" name="height" placeholder="height"/>
-                        </div>
+                            <Form id="builder-form" className="  d-flex flex-column gap-5">
+                                <Form.Group className="w-100 d-flex flex-column align-items-sm-start">
+                                    <Form.Control className="input" ref={nameRef} type="text" name="name" placeholder="World name" autoComplete="off" required/>
+                                </Form.Group>
+                                <Form.Group className="w-100 d-flex flex-column align-items-sm-start">
+                                    <Form.Label>Width: {width}</Form.Label>
+                                    <Form.Range ref={widthRef} min={2} max={50} value={width} onChange={e =>handleWidthChange(e)}/>
+                                </Form.Group>
+                                <Form.Group className="w-100 d-flex flex-column align-items-sm-start">
+                                    <Form.Label>Height: {height}</Form.Label>
+                                    <Form.Range ref={heightRef} min={2} max={50} value={height} onChange={e =>handleHeightChange(e)}/>
+                                </Form.Group>
+                            </Form>
+                            {/*
+                            <Form.Label>Initial Seed:</Form.Label>
+                            <Form.Check name = "default" label = "Default"/>
+                            <Form.Check name="Random" label = "Random"/>
+                            <Form.Label>% of alive cells:</Form.Label>
+                            <Form.Range min={0} max={100}/><*/}
                     </Col>
                     <Col></Col>
                 </Row>
                 <Row>
                     <Col></Col>
                     <Col sm={6}>
-                    <div id="builder-btn-container">
-                        <Col sm={5}>
+                    <Container id="builder-btn-container" className="d-flex flex-column flex-md-row gap-4 gap-md-3 mt-5">
+                        <Col>
                             <button onClick={()=>handleCreate()}>Create</button>
                         </Col>
-                        <Col sm={5}>
-                            <button>Discard</button>
+                        <Col>
+                            <button onClick={e=>props.setView(View.Menu)}>Discard</button>
                         </Col>
-                    </div>
+                    </Container>
                     </Col>
                     <Col></Col>
                 </Row>

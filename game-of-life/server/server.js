@@ -8,6 +8,7 @@ const port = 5000;
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '10mb' })); // For JSON payloads
 // Enable CORS for all origins
 app.use(cors());
 

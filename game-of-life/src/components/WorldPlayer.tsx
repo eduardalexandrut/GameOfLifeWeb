@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Canvas from "./Canvas";
 import Stack from "../classes/Stack";
 import { Cell } from "../classes/Cell";
@@ -102,13 +102,30 @@ const WorldPlayer = (props:any) => {
                     <button className="control-btn" onClick={()=>zoomIn()}>+</button>
                 </div>
                 <div id="undoRedoBox"> 
-                    <button className="startBtn" onClick={()=>canvasRef.current.handleUndoRedo(Actions.UNDO)}>Undo</button>
-                    <button className="startBtn" onClick={()=>canvasRef.current.handleUndoRedo(Actions.REDO)}>Redo</button>
+                {isPlaying ? 
+                    <React.Fragment>
+                        <button className="startBtn" disabled>Undo</button>
+                        <button className="startBtn" disabled>Redo</button>
+                    </React.Fragment>
+                    :
+                    <React.Fragment>
+                        <button className="startBtn" onClick={()=>canvasRef.current.handleUndoRedo(Actions.UNDO)}>Undo</button>
+                    <   button className="startBtn" onClick={()=>canvasRef.current.handleUndoRedo(Actions.REDO)}>Redo</button>
+                    </React.Fragment>
+            }
+                    
                 </div>
+                {/*
                 <button className="startBtn" id="showgridBtn">
                     Show Grid
                 </button>
-                <button id="saveBtn" onClick={saveWorld}>Save</button>
+                */}
+                {isPlaying ? 
+                    <button id="saveBtn" disabled>Save</button>
+                    :
+                    <button id="saveBtn" onClick={saveWorld}>Save</button>
+                }
+                
             </div>
             <Canvas 
                 ref = {canvasRef}
