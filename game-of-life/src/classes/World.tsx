@@ -202,4 +202,9 @@ export class World implements WorldInterface{
       return world;
     }
 
+    static convertFromJSON(json:any): World {
+      const world = new World(json.name, json.columns, json.rows);
+      return world;
+    }
+
 }

@@ -4,7 +4,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
-const port = 5000;
+const port = 3000;
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
@@ -37,6 +37,29 @@ app.post('/upload-world', (req, res) => {
     res.send('File saved successfully');
   });
 });
+
+//GET endpoint to get all the worlds and convert them from json files to objects.
+app.get('/get-worlds', (req,res) => {
+  const directoryPath = path.join(__dirname, '../game-of-life-data');
+
+  fs.readdirSync(directoryPath, (err, files) => {
+    if (err) {
+      return res.status(500).send(`Unable to open directory: ${err}`)
+    }
+
+    const jsonFiles = files.filter((file) => path.extname(file) === ".json");//Filter only .json files.
+    const worlds = [];
+
+    jsonFiles.forEach(file => {
+      const filePath = path.join(directoryPath, file);
+      const data = JSON.parse(fs.readFileSync(filePath,'utf-8'));
+      //const world = World.convertFromJSON(data);
+      worlds.push(data);
+    });
+
+    res.json(worlds);
+  })
+})
 
 // Start the server
 app.listen(port, () => {

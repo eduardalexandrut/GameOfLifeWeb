@@ -6,7 +6,7 @@ import WorldBuilder from './components/WorldBuilder';
 import WorldPlayer from './components/WorldPlayer';
 import { WorldProvider } from './components/WorldContext';
 import { World } from './classes/World';
-import WorldSelector from './components/WorldSelector';
+import WorldSelector from './components/WorldList';
 import WorldMenu from './components/WorldMenu';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
