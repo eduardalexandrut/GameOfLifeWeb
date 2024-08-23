@@ -45,7 +45,7 @@ const WorldBuilder = (props:propType) => {
     }
     
     return (
-        <div id = 'world-builder'>
+        
             <Container>
                 <Row className="mt-5 mb-5">
                     <h1 >New world</h1>
@@ -91,7 +91,7 @@ const WorldBuilder = (props:propType) => {
                 </Row>
             </Container>
             
-        </div>
+   
     )
 }
 export default WorldBuilder;

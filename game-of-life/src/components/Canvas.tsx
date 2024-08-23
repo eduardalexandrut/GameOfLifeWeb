@@ -1,4 +1,4 @@
-import { ForwardedRef, forwardRef, useContext, useEffect, useImperativeHandle, useRef, useState } from "react";
+import React, { ForwardedRef, forwardRef, useCallback, useContext, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { Cell } from "../classes/Cell";
 import { Context } from "../App";
 import { World } from "../classes/World";
@@ -6,6 +6,7 @@ import Stack from "../classes/Stack";
 import {Actions } from "./WorldPlayer";
 import { useWorldContext } from "./WorldContext";
 import { render } from "@testing-library/react";
+import useWindowSize from "../hooks/useWindoSize";
 
 type propType = {
     isPlaying: boolean,
@@ -29,6 +30,7 @@ const Canvas = forwardRef<CanvasRef, propType>((props, ref) => {
   const world = useWorldContext();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
+  const {width, height} = useWindowSize();
 
   /**I use this hook in order to call handleUndoRedo() function from parent component WorldPlayer. */
   useImperativeHandle(ref, () => ({
@@ -37,7 +39,7 @@ const Canvas = forwardRef<CanvasRef, propType>((props, ref) => {
     },
   }));
 
-  useEffect(() => {
+  const initializeCanvas = useCallback(() => {
     if (canvasRef.current) {
       contextRef.current = canvasRef.current.getContext('2d');
       if (contextRef.current) {
@@ -45,28 +47,56 @@ const Canvas = forwardRef<CanvasRef, propType>((props, ref) => {
         world.draw();
       }
     }
-  }, []);
+  }, [])
+
+  const clearAndRedraw = useCallback(() => {
+    if (contextRef.current) {
+      contextRef.current.clearRect(0, 0, contextRef.current.canvas.width, contextRef.current.canvas.height);
+      world.cells.forEach((row: Cell[]) =>
+          row.forEach((cell: Cell) => {
+              cell.ctx = contextRef.current;
+              cell.draw();
+          })
+      );
+    }
+  }, [])
+
+  const handleResize = useCallback(() => {
+    initializeCanvas();
+    clearAndRedraw();
+  }, [initializeCanvas, clearAndRedraw]);
+
+  const handleZoomChange = useCallback(() => {
+    if (contextRef.current) {
+        contextRef.current.clearRect(0, 0, contextRef.current.canvas.width, contextRef.current.canvas.height);
+        world.zoom(props.zoom);
+        world.cells.forEach((row: Cell[]) =>
+            row.forEach((cell: Cell) => {
+                cell.ctx = contextRef.current;
+                cell.draw();
+            })
+        );
+    }
+  }, [props.zoom]);
 
   useEffect(() => {
     if (props.isPlaying) {
-      const intId = setInterval(evolve, props.speed);
-      return () => clearInterval(intId);
+        const intId = setInterval(evolve, props.speed);
+        return () => clearInterval(intId);
     }
   }, [props.isPlaying, props.speed]);
 
+  useEffect(() => {
+    initializeCanvas();
+  }, [initializeCanvas]);
 
   useEffect(() => {
-    if (contextRef.current) {
-      contextRef.current.clearRect(0, 0, contextRef.current.canvas.width, contextRef.current.canvas.height);
-      world.zoom(props.zoom);
-      world.cells.forEach((row: Cell[]) =>
-        row.forEach((cell: Cell) => {
-          cell.ctx = contextRef.current;
-          cell.draw();
-        })
-      );
-    }
-  }, [props.zoom]);
+    handleZoomChange();
+  }, [props.zoom, handleZoomChange]);
+
+  useEffect(() => {
+    handleResize();
+  }, [width, height, handleResize]);
 
   const evolve = () => {
     world.evolve();
@@ -107,24 +137,14 @@ const Canvas = forwardRef<CanvasRef, propType>((props, ref) => {
       world.redo();
       console.log(`redo size ${world.redoStack.size()}`)
     }
-
-    const context = contextRef.current;
-    if (context) {
-      context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-      world.cells.forEach((row: Cell[]) =>
-        row.forEach((cell: Cell) => {
-          cell.ctx = context;
-          cell.draw();
-        })
-      );
-    }
+    clearAndRedraw();
   };
 
   return (
     <canvas
       ref={canvasRef}
-      width={world.columns * CELL_WIDTH * props.zoom}
-      height={world.rows * CELL_HEIGHT * props.zoom}
+      width={width}
+      height={height - 300}
       onClick={handleCanvasClick}
     ></canvas>
   );

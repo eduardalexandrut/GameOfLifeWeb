@@ -76,10 +76,10 @@ export class Cell implements CellInterface {
 
         if (this.#isAlive) {
             this.#ctx.fillStyle = '#D9D9D9';
-            this.#ctx.strokeStyle = '#00072D';
+            this.#ctx.strokeStyle = '#011930' //'#00072D';
             this.#ctx.strokeRect(this.#posX, this.#posY, this.#width, this.#height);
         } else {
-            this.#ctx.fillStyle = '#00072D';
+            this.#ctx.fillStyle = '#011930'//'#00072D';
             this.#ctx.strokeStyle = '#D9D9D9';
             this.#ctx.strokeRect(this.#posX, this.#posY, this.#width, this.#height);
         }
