@@ -7,6 +7,7 @@ import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col"
+import React from "react";
 
 
 type propType = {
@@ -46,7 +47,7 @@ const WorldBuilder = (props:propType) => {
     
     return (
         
-            <Container>
+            <React.Fragment>
                 <Row className="mt-5 mb-5">
                     <h1 >New world</h1>
                 </Row>
@@ -89,7 +90,7 @@ const WorldBuilder = (props:propType) => {
                     </Col>
                     <Col></Col>
                 </Row>
-            </Container>
+            </React.Fragment>
             
    
     )

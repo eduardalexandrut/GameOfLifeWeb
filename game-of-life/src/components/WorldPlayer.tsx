@@ -8,6 +8,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import PauseIcon from '@mui/icons-material/Pause';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useWorldContext } from "./WorldContext";
+import { Container,Row, Col } from "react-bootstrap";
 
 export enum Actions{
     UNDO,
@@ -72,74 +73,86 @@ const WorldPlayer = (props:any) => {
         };
 
     return (
-        <div>
-            <div id="control-panel">
-                <button className="startBtn" onClick = {(e)=>handleIsPlaying(e.target)}>Start</button>
-                <div id="genBox">
-                    <ul>
-                        <li>{generation}</li>
-                        <li>Generation</li>
-                    </ul>
-                </div>
-                <div id="speedBox">
-                    <button className="control-btn" onClick={()=>decreaseSpeed()}>-</button>
-           
+       <React.Fragment>
+            <Row className="d-flex flex-row justify-content-between align-items-center">
+                <Col>
+                    <button className="startBtn" onClick = {(e)=>handleIsPlaying(e.target)}>Start</button>
+                </Col>
+                <Col>
+                    <div id="genBox">
                         <ul>
-                            <li>{speed}<span> ms</span></li>
-                            <li>Speed</li>
+                            <li>{generation}</li>
+                            <li>Generation</li>
                         </ul>
-                   
-                    <button className="control-btn" onClick={()=>increaseSpeed()}>+</button>
-                </div>
-                <div id="zoomBox">
-                    <button className="control-btn" onClick={()=>zoomOut()}>-</button>
-             
-                        <ul>
-                            <li>{Math.round(zoom * 100)} <span>%</span></li>
-                            <li>Zoom</li>
-                        </ul>
-                
-                    <button className="control-btn" onClick={()=>zoomIn()}>+</button>
-                </div>
-                <div id="undoRedoBox"> 
-                {isPlaying ? 
-                    <React.Fragment>
-                        <button className="startBtn" disabled>Undo</button>
-                        <button className="startBtn" disabled>Redo</button>
-                    </React.Fragment>
-                    :
-                    <React.Fragment>
-                        <button className="startBtn" onClick={()=>canvasRef.current.handleUndoRedo(Actions.UNDO)}>Undo</button>
-                    <   button className="startBtn" onClick={()=>canvasRef.current.handleUndoRedo(Actions.REDO)}>Redo</button>
-                    </React.Fragment>
-            }
+                    </div>
+                </Col>
+                <Col className="d-flex flex-row align-items-center justify-content-around">
+                        <button className="control-btn" onClick={()=>decreaseSpeed()}>-</button>
+            
+                            <ul>
+                                <li>{speed}<span> ms</span></li>
+                                <li>Speed</li>
+                            </ul>
                     
-                </div>
-                {/*
-                <button className="startBtn" id="showgridBtn">
-                    Show Grid
-                </button>
-                */}
-                {isPlaying ? 
-                    <button id="saveBtn" disabled>Save</button>
-                    :
-                    <button id="saveBtn" onClick={saveWorld}>Save</button>
-                }
+                        <button className="control-btn" onClick={()=>increaseSpeed()}>+</button>
+                </Col>
+                <Col className="d-flex flex-row align-items-center justify-content-around">
+                        <button className="control-btn" onClick={()=>zoomOut()}>-</button>
                 
-            </div>
-            <Canvas 
-                ref = {canvasRef}
-                isPlaying={isPlaying}
-                generation = {generation}
-                setGeneration = {setGeneration}
-                speed={speed}
-                history = {history}
-                setHistory = {setHistory}
-                historyAction={historyAction}
-                isDrawing={isDrawing}
-                zoom = {zoom}
-            />
-        </div>
+                            <ul>
+                                <li>{Math.round(zoom * 100)} <span>%</span></li>
+                                <li>Zoom</li>
+                            </ul>
+                    
+                        <button className="control-btn" onClick={()=>zoomIn()}>+</button>
+
+                </Col>
+                <Col>
+                    {isPlaying ? 
+                        <React.Fragment>
+                            <button className="startBtn" disabled>Undo</button>
+                            <button className="startBtn" disabled>Redo</button>
+                        </React.Fragment>
+                        :
+                        <React.Fragment>
+                            <button className="startBtn" onClick={()=>canvasRef.current.handleUndoRedo(Actions.UNDO)}>Undo</button>
+                            <button className="startBtn" onClick={()=>canvasRef.current.handleUndoRedo(Actions.REDO)}>Redo</button>
+                        </React.Fragment>
+                }
+                </Col>
+                <Col>
+                    <select className="form-select">
+                        <option>Pen</option>
+                        <option>Hand</option>
+                    </select>                
+                </Col>
+                <Col>
+                    {isPlaying ? 
+                        <button id="saveBtn" disabled>Save</button>
+                        :
+                        <button id="saveBtn" onClick={saveWorld}>Save</button>
+                    }
+                </Col>
+            </Row>
+            {/*<div id="control-panel">
+            </div>*/}
+            <Row>
+                <Col>
+                    <Canvas 
+                        ref = {canvasRef}
+                        isPlaying={isPlaying}
+                        generation = {generation}
+                        setGeneration = {setGeneration}
+                        speed={speed}
+                        history = {history}
+                        setHistory = {setHistory}
+                        historyAction={historyAction}
+                        isDrawing={isDrawing}
+                        zoom = {zoom}
+                    />
+                </Col>
+            </Row>
+      </React.Fragment>
     )
 }
 

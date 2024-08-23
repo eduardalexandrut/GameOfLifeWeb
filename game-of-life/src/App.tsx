@@ -9,6 +9,7 @@ import { World } from './classes/World';
 import WorldSelector from './components/WorldList';
 import WorldMenu from './components/WorldMenu';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Container } from 'react-bootstrap';
 
 
 export enum View {
@@ -53,13 +54,8 @@ function App() {
   }
 
   return (
-    /*<Context.Provider value={[world, setWorld]}>
-      <div className="App">
-        {content}
-      </div>
-    </Context.Provider>*/
     <WorldProvider>
-      <div className="App">
+      <div className="App container-fluid m-0 ">
         {content}
       </div>
     </WorldProvider>
