@@ -41,6 +41,12 @@ const Canvas = forwardRef<CanvasRef, propType>((props, ref) => {
 
   const initializeCanvas = useCallback(() => {
     if (canvasRef.current) {
+      //Set the canvas size to be 100%.
+      canvasRef.current.style.width = '100%';
+      canvasRef.current.style.height = '100%';
+      canvasRef.current.width = canvasRef.current.offsetWidth;
+      canvasRef.current.height = canvasRef.current.offsetHeight;
+
       contextRef.current = canvasRef.current.getContext('2d');
       if (contextRef.current) {
         world.setContext(contextRef.current); // Set the context for all the cells in the world
@@ -49,6 +55,7 @@ const Canvas = forwardRef<CanvasRef, propType>((props, ref) => {
     }
   }, [])
 
+  //Callback function to erase and redraw the entire world on the canvas.
   const clearAndRedraw = useCallback(() => {
     if (contextRef.current) {
       contextRef.current.clearRect(0, 0, contextRef.current.canvas.width, contextRef.current.canvas.height);
@@ -66,6 +73,7 @@ const Canvas = forwardRef<CanvasRef, propType>((props, ref) => {
     clearAndRedraw();
   }, [initializeCanvas, clearAndRedraw]);
 
+  //Callback function to redraw the world when zooming in and out.
   const handleZoomChange = useCallback(() => {
     if (contextRef.current) {
         contextRef.current.clearRect(0, 0, contextRef.current.canvas.width, contextRef.current.canvas.height);
@@ -96,19 +104,12 @@ const Canvas = forwardRef<CanvasRef, propType>((props, ref) => {
 
   useEffect(() => {
     handleResize();
-  }, [width, height, handleResize]);
+  }, [width, height]);
 
   const evolve = () => {
     world.evolve();
-    world.cells.forEach((row: Cell[]) =>
-      row.forEach((cell: Cell) => {
-        cell.ctx = contextRef.current;
-        cell.draw();
-      })
-    );
-
-    // Increase the generation count
-    props.setGeneration(prevG => prevG + 1);
+    clearAndRedraw()
+    props.setGeneration(prevG => prevG + 1);// Increase the generation count
   };
 
   const handleCanvasClick = (e: React.MouseEvent) => {
@@ -131,22 +132,23 @@ const Canvas = forwardRef<CanvasRef, propType>((props, ref) => {
     if (action === Actions.UNDO && props.generation > 0) {
       props.setGeneration(prevGeneration => prevGeneration - 1);
       world.undo();
-      console.log(`undo size ${world.undoStack.size()}`)
     } else if (action === Actions.REDO && props.generation < (world.redoStack.size() + world.undoStack.size())) {
       props.setGeneration(prevGeneration => prevGeneration + 1);
       world.redo();
-      console.log(`redo size ${world.redoStack.size()}`)
     }
     clearAndRedraw();
   };
 
   return (
-    <canvas
-      ref={canvasRef}
-      width={width}
-      height={height - 300}
-      onClick={handleCanvasClick}
-    ></canvas>
+    <React.Fragment>
+      <p>{width} {height}</p>
+      <canvas
+        ref={canvasRef}
+        style={{ display: 'block' }}
+        onClick={handleCanvasClick}
+      ></canvas>
+
+    </React.Fragment>
   );
 });
 

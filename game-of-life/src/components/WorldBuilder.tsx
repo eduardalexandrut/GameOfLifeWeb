@@ -49,11 +49,11 @@ const WorldBuilder = (props:propType) => {
         
             <React.Fragment>
                 <Row className="mt-5 mb-5">
-                    <h1 >New world</h1>
+                    <h1>New world</h1>
                 </Row>
                 <Row>
                     <Col></Col>
-                    <Col sm={6}>
+                    <Col lg={4} md={6} xs={10}>
                             <Form id="builder-form" className="  d-flex flex-column gap-5">
                                 <Form.Group className="w-100 d-flex flex-column align-items-sm-start">
                                     <Form.Control className="input" ref={nameRef} type="text" name="name" placeholder="World name" autoComplete="off" required/>
@@ -78,8 +78,8 @@ const WorldBuilder = (props:propType) => {
                 </Row>
                 <Row>
                     <Col></Col>
-                    <Col sm={6}>
-                    <Container id="builder-btn-container" className="d-flex flex-column flex-md-row gap-4 gap-md-3 mt-5">
+                    <Col lg={4} md={6} xs={10}>
+                    <Container id="builder-btn-container" className="d-flex flex-column justify-content-between flex-md-row gap-4 gap-md-3 mt-5">
                         <Col>
                             <button onClick={()=>handleCreate()}>Create</button>
                         </Col>
