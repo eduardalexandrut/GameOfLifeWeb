@@ -74,7 +74,7 @@ const WorldPlayer = (props:any) => {
 
     return (
        <React.Fragment>
-            <Row className="d-flex flex-row justify-content-between align-items-center">
+            <Row className="h-30 d-flex flex-row justify-content-between align-items-center">
                 <Col>
                     <button className="startBtn" onClick = {(e)=>handleIsPlaying(e.target)}>Start</button>
                 </Col>
@@ -134,10 +134,7 @@ const WorldPlayer = (props:any) => {
                     }
                 </Col>
             </Row>
-            {/*<div id="control-panel">
-            </div>*/}
-            <Row>
-                <Col>
+
                     <Canvas 
                         ref = {canvasRef}
                         isPlaying={isPlaying}
@@ -150,8 +147,7 @@ const WorldPlayer = (props:any) => {
                         isDrawing={isDrawing}
                         zoom = {zoom}
                     />
-                </Col>
-            </Row>
+      
       </React.Fragment>
     )
 }

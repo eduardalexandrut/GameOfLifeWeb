@@ -1,45 +1,24 @@
 
-
 interface CellInterface  {
-    width: number;
-    height: number;
     posX: number;
     posY: number;
     isAlive: boolean;
     ctx: CanvasRenderingContext2D | null;
-    draw(): void;/*** function to draw a cell on the canvas(ctx).*/
     clone(): Cell
 }
 export class Cell implements CellInterface {
-    #width: number;
-    #height: number;
     #posX: number;
     #posY: number;
     #isAlive: boolean;
     #ctx: CanvasRenderingContext2D | null;
 
-    constructor(width: number, height: number, posX: number, posY: number, isAlive: boolean) {
-        this.#width = width;
-        this.#height = height;
+    constructor(posX: number, posY: number, isAlive: boolean) {
         this.#posX = posX;
         this.#posY = posY;
         this.#isAlive = isAlive;
         this.#ctx = null;
     }
 
-    get width(): number {
-        return this.#width;
-    }
-    set width(value: number) {
-        this.#width = value;
-    }
-
-    get height(): number {
-        return this.#height;
-    }
-    set height(value: number) {
-        this.#height = value;
-    }
 
     get posX(): number {
         return this.#posX;
@@ -69,31 +48,12 @@ export class Cell implements CellInterface {
         this.#ctx = value;
     }
 
-    draw(): void {
-        if (!this.#ctx) {
-            throw new Error('Canvas context is not set.');
-        }
-
-        if (this.#isAlive) {
-            this.#ctx.fillStyle = '#D9D9D9';
-            this.#ctx.strokeStyle = '#011930' //'#00072D';
-            this.#ctx.strokeRect(this.#posX, this.#posY, this.#width, this.#height);
-        } else {
-            this.#ctx.fillStyle = '#011930'//'#00072D';
-            this.#ctx.strokeStyle = '#D9D9D9';
-            this.#ctx.strokeRect(this.#posX, this.#posY, this.#width, this.#height);
-        }
-        this.#ctx.fillRect(this.#posX, this.#posY, this.#width, this.#height);
-    }
-
     clone(): Cell {
-        return new Cell(this.width, this.height, this.posX, this.posY, this.isAlive);
+        return new Cell(this.posX, this.posY, this.isAlive);
     }
 
     convertToJSON(): string {
         return JSON.stringify({
-            width: this.#width,
-            height: this.#height,
             posX: this.#posX,
             posY: this.#posY,
             isAlive: this.#isAlive,

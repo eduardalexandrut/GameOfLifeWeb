@@ -6,8 +6,7 @@ interface WorldInterface {
     rows: number,
     name: string,
     cells: Cell[][],
-    draw(): void,
-    evolve(): void,
+    evolve(offsetX:number, offsetY:number): void,
     setContext(ctx:CanvasRenderingContext2D): void
 }
 const CELL_COLUMNS = 50;
@@ -48,13 +47,13 @@ export class World implements WorldInterface{
              for (let j = 0; j < this.rows; j++) {
                  // Generate a random boolean to determine if the cell is alive or dead
                  const isAlive = Math.random() > 0.4; // Adjust the probability threshold as needed
-                 const cell: Cell = new Cell(CELL_COLUMNS, CELL_ROWS, x, y, isAlive);
+                 const cell: Cell = new Cell( x, y, isAlive);
                  //cell.draw();
                  row.push(cell);
-                 x += 50;
+                 x += 1;
              }
              newCells.push(row);
-             y += 50;
+             y += 1;
              x = 0;
          }
          console.log(newCells)
@@ -102,11 +101,7 @@ export class World implements WorldInterface{
         return this.#redoStack;
       }
 
-      draw(): void {
-          this.#cells.forEach((row) => row.forEach((cell) => cell.draw()));
-      }
-
-      evolve(): void {
+      evolve(offsetX:number, offsetY:number): void {
         const prevState = this.#cells
         this.#undoStack.push(prevState)
         const newCells = this.#cells.map((row, i) => {
@@ -126,11 +121,11 @@ export class World implements WorldInterface{
               //Use conway's conditions to evolve the matrix of cells
               if (cell.isAlive) {
                   if (aliveNeighbours.length < 2 || aliveNeighbours.length > 3) {
-                      return new Cell(cell.width, cell.height, cell.posX, cell.posY, false);
+                      return new Cell(cell.posX, cell.posY, false);
                   }
               } else {
                   if (aliveNeighbours.length === 3) {
-                      return new Cell(cell.width, cell.height, cell.posX, cell.posY, true);
+                      return new Cell(cell.posX, cell.posY, true);
                   }
               }
               return cell;
@@ -139,25 +134,6 @@ export class World implements WorldInterface{
 
         this.#cells = newCells;
       }
-
-      zoom(zoomFactor:number): void {
-        const newCells = this.#cells.map((row, i) => {
-          return row.map((cell, j) => {
-              const new_width = CELL_COLUMNS * zoomFactor;
-              const new_height = CELL_ROWS * zoomFactor;
-              const new_posX = j * new_width;  // Position based on column index
-              const new_posY = i * new_height; // Position based on row index
-              return new Cell(new_width, new_height, new_posX, new_posY, cell.isAlive);
-          });
-        });
-        this.#cells = newCells;
-      }
-
-      /*saveState(): void {
-        // Create a deep copy of the current state
-        const currentState = this.#cells.map(row => row.map(cell => cell.clone()));
-        this.#undo.push(currentState);
-    }*/
 
     undo(): void {
       if (this.#undoStack.size() > 0) {

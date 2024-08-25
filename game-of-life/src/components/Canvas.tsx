@@ -6,7 +6,7 @@ import Stack from "../classes/Stack";
 import {Actions } from "./WorldPlayer";
 import { useWorldContext } from "./WorldContext";
 import { render } from "@testing-library/react";
-import useWindowSize from "../hooks/useWindoSize";
+import useWindowSize from "../hooks/useWindowSize";
 
 type propType = {
     isPlaying: boolean,
@@ -31,6 +31,9 @@ const Canvas = forwardRef<CanvasRef, propType>((props, ref) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
   const {width, height} = useWindowSize();
+  const [offset, setOffset] = useState({x:0,y:0});
+  const [dragStart, setDragStart] = useState({x:0,y:0});
+  const [isDragging, setIsDragging] = useState<boolean>(false);
 
   /**I use this hook in order to call handleUndoRedo() function from parent component WorldPlayer. */
   useImperativeHandle(ref, () => ({
@@ -43,30 +46,25 @@ const Canvas = forwardRef<CanvasRef, propType>((props, ref) => {
     if (canvasRef.current) {
       //Set the canvas size to be 100%.
       canvasRef.current.style.width = '100%';
-      canvasRef.current.style.height = '100%';
+      canvasRef.current.style.height = '85%';
       canvasRef.current.width = canvasRef.current.offsetWidth;
       canvasRef.current.height = canvasRef.current.offsetHeight;
 
       contextRef.current = canvasRef.current.getContext('2d');
       if (contextRef.current) {
         world.setContext(contextRef.current); // Set the context for all the cells in the world
-        world.draw();
+        draw(CELL_HEIGHT);
       }
     }
   }, [])
 
   //Callback function to erase and redraw the entire world on the canvas.
-  const clearAndRedraw = useCallback(() => {
+  const clearAndRedraw = () => {
     if (contextRef.current) {
       contextRef.current.clearRect(0, 0, contextRef.current.canvas.width, contextRef.current.canvas.height);
-      world.cells.forEach((row: Cell[]) =>
-          row.forEach((cell: Cell) => {
-              cell.ctx = contextRef.current;
-              cell.draw();
-          })
-      );
+      draw(CELL_HEIGHT)
     }
-  }, [])
+  }
 
   const handleResize = useCallback(() => {
     initializeCanvas();
@@ -77,15 +75,35 @@ const Canvas = forwardRef<CanvasRef, propType>((props, ref) => {
   const handleZoomChange = useCallback(() => {
     if (contextRef.current) {
         contextRef.current.clearRect(0, 0, contextRef.current.canvas.width, contextRef.current.canvas.height);
-        world.zoom(props.zoom);
-        world.cells.forEach((row: Cell[]) =>
-            row.forEach((cell: Cell) => {
-                cell.ctx = contextRef.current;
-                cell.draw();
-            })
-        );
+        draw(CELL_HEIGHT)
     }
   }, [props.zoom]);
+
+  const handleMouseDown = (event) => {
+    setIsDragging(true);
+    setDragStart({x:event.clientX,y:event.clientY})
+  }
+
+  const handleMouseMove = (event) => {
+    if (isDragging) {
+      console.log(`${event.clientX}, ${event.clientY}`)
+      const dx = event.clientX - dragStart.x;
+      const dy = event.clientY - dragStart.y;
+
+      setOffset((prevOffset) => ({
+        x: prevOffset.x - dx,
+        y: prevOffset.y - dy
+       }))
+
+      setDragStart({x:event.clientX, y:event.clientY})
+      clearAndRedraw();
+
+    }
+  }
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  }
 
   useEffect(() => {
     if (props.isPlaying) {
@@ -107,10 +125,33 @@ const Canvas = forwardRef<CanvasRef, propType>((props, ref) => {
   }, [width, height]);
 
   const evolve = () => {
-    world.evolve();
+    world.evolve(offset.x, offset.y);
     clearAndRedraw()
     props.setGeneration(prevG => prevG + 1);// Increase the generation count
   };
+
+  const draw = (size:number) => {
+    world.cells.forEach(row=>{
+      row.forEach(cell => {
+        if (!contextRef.current) {
+          throw new Error('Canvas context is not set.');
+        }
+
+        const drawX = (cell.posX * size - offset.x) * props.zoom;
+        const drawY = (cell.posY * size - offset.y) * props.zoom;
+
+        if (cell.isAlive) {
+            contextRef.current.fillStyle = '#D9D9D9';
+            contextRef.current.strokeStyle = '#011930' //'#00072D';
+        } else {
+            contextRef.current.fillStyle = '#011930'//'#00072D';
+            contextRef.current.strokeStyle = '#D9D9D9';
+        }
+        contextRef.current.strokeRect(drawX, drawY, size * props.zoom, size * props.zoom);
+        contextRef.current.fillRect(drawX, drawY, size * props.zoom, size * props.zoom);
+      })
+    })
+  }
 
   const handleCanvasClick = (e: React.MouseEvent) => {
     if (!props.isPlaying /*&& props.isDrawing*/) {
@@ -122,7 +163,7 @@ const Canvas = forwardRef<CanvasRef, propType>((props, ref) => {
         const coordX = Math.floor(clientX / (CELL_WIDTH * props.zoom));
         const coordY = Math.floor(clientY / (CELL_HEIGHT * props.zoom));
         world.cells[coordY][coordX].isAlive = !world.cells[coordY][coordX].isAlive;
-        world.cells[coordY][coordX].draw();
+        //world.cells[coordY][coordX].draw(offset.x, offset.y, props.zoom, 50);DA RISOLVERE
         world.emptyRedoStack();
       }
     }
@@ -141,11 +182,13 @@ const Canvas = forwardRef<CanvasRef, propType>((props, ref) => {
 
   return (
     <React.Fragment>
-      <p>{width} {height}</p>
       <canvas
         ref={canvasRef}
-        style={{ display: 'block' }}
-        onClick={handleCanvasClick}
+        style={{ display: 'block',cursor: isDragging ? 'grabbing' : 'grab' }}
+        //onClick={handleCanvasClick}
+        onMouseMove={(event)=>handleMouseMove(event)}
+        onMouseDown={(event) => handleMouseDown(event)}
+        onMouseUp={handleMouseUp}
       ></canvas>
 
     </React.Fragment>

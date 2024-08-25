@@ -9,6 +9,10 @@ body {
   color: #EEEEEE !important;
 }
 
+.App{
+  height: 100vh !important;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
