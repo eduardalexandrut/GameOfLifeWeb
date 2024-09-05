@@ -9,19 +9,27 @@ import PauseIcon from '@mui/icons-material/Pause';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useWorldContext } from "./WorldContext";
 import { Container,Row, Col } from "react-bootstrap";
+import e from "express";
+import Canvas2 from "./Canvas2";
 
 export enum Actions{
     UNDO,
     REDO
 }
+
+export enum Tools {
+    Draw,
+    Move
+}
 const WorldPlayer = (props:any) => {
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
     const [speed, setSpeed] = useState<number>(500);
-    const [zoom, setZoom] = useState<number>(1);
+    const [zoom, setzoom] = useState<number>(1);
     const [generation, setGeneration] = useState<number>(0);
     const [history, setHistory] = useState<Stack<Cell[][]>>(new Stack<Cell[][]>());
     const [historyAction, setHistoryAction] = useState<Actions| null>(null);
+    const [tool, setTool] = useState<Tools>(Tools.Draw)
     const canvasRef = useRef(null);
     const world = useWorldContext();
 
@@ -40,14 +48,14 @@ const WorldPlayer = (props:any) => {
         }
     }
 
-    const zoomIn = () => {
-        setZoom(prevZoom => prevZoom + 0.1)
+    const handleZoom = (value:number) => {
+        setzoom(prevzoom => prevzoom + value)
     }
 
-    const zoomOut = () => {
-        if (zoom > 0.2) {
-            setZoom( prevZoom => prevZoom - 0.1)
-        }
+
+    const handleSetTool = (event) => {
+        const selectedTool = parseInt(event.target.value, 10) as Tools;
+        setTool(selectedTool)
     }
 
     const saveWorld = async () => {
@@ -97,14 +105,14 @@ const WorldPlayer = (props:any) => {
                         <button className="control-btn" onClick={()=>increaseSpeed()}>+</button>
                 </Col>
                 <Col className="d-flex flex-row align-items-center justify-content-around">
-                        <button className="control-btn" onClick={()=>zoomOut()}>-</button>
+                        <button className="control-btn" onClick={()=>handleZoom(-0.1)}>-</button>
                 
                             <ul>
                                 <li>{Math.round(zoom * 100)} <span>%</span></li>
                                 <li>Zoom</li>
                             </ul>
                     
-                        <button className="control-btn" onClick={()=>zoomIn()}>+</button>
+                        <button className="control-btn" onClick={()=>handleZoom(0.1)}>+</button>
 
                 </Col>
                 <Col>
@@ -121,9 +129,9 @@ const WorldPlayer = (props:any) => {
                 }
                 </Col>
                 <Col>
-                    <select className="form-select">
-                        <option>Pen</option>
-                        <option>Hand</option>
+                    <select onChange={(event) => handleSetTool(event)} className="form-select">
+                        <option value={Tools.Draw}>Draw</option>
+                        <option value={Tools.Move}>Move</option>
                     </select>                
                 </Col>
                 <Col>
@@ -135,7 +143,7 @@ const WorldPlayer = (props:any) => {
                 </Col>
             </Row>
 
-                    <Canvas 
+                    <Canvas2 
                         ref = {canvasRef}
                         isPlaying={isPlaying}
                         generation = {generation}
@@ -146,6 +154,7 @@ const WorldPlayer = (props:any) => {
                         historyAction={historyAction}
                         isDrawing={isDrawing}
                         zoom = {zoom}
+                        tool = {tool}
                     />
       
       </React.Fragment>

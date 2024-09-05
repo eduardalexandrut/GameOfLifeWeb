@@ -7,7 +7,7 @@ interface WorldInterface {
     name: string,
     cells: Cell[][],
     evolve(offsetX:number, offsetY:number): void,
-    setContext(ctx:CanvasRenderingContext2D): void
+    //setContext(ctx:CanvasRenderingContext2D): void
 }
 const CELL_COLUMNS = 50;
 const CELL_ROWS = 50;
@@ -164,9 +164,9 @@ export class World implements WorldInterface{
       this.#redoStack = new Stack<Cell[][]>;
     }
 
-    setContext(ctx:CanvasRenderingContext2D): void {
+    /*setContext(ctx:CanvasRenderingContext2D): void {
         this.#cells.forEach((row) =>row.forEach((cell) => cell.ctx = ctx));
-    }
+    }*/
 
     convertToJSON(): string {
       const world:string = JSON.stringify({

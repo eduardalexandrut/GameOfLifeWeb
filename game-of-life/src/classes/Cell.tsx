@@ -3,20 +3,20 @@ interface CellInterface  {
     posX: number;
     posY: number;
     isAlive: boolean;
-    ctx: CanvasRenderingContext2D | null;
+    //ctx: CanvasRenderingContext2D | null;
     clone(): Cell
 }
 export class Cell implements CellInterface {
     #posX: number;
     #posY: number;
     #isAlive: boolean;
-    #ctx: CanvasRenderingContext2D | null;
+    //#ctx: CanvasRenderingContext2D | null;
 
     constructor(posX: number, posY: number, isAlive: boolean) {
         this.#posX = posX;
         this.#posY = posY;
         this.#isAlive = isAlive;
-        this.#ctx = null;
+        //this.#ctx = null;
     }
 
 
@@ -41,12 +41,12 @@ export class Cell implements CellInterface {
         this.#isAlive = value;
     }
 
-    get ctx(): CanvasRenderingContext2D | null {
+    /*get ctx(): CanvasRenderingContext2D | null {
         return this.#ctx;
     }
     set ctx(value: CanvasRenderingContext2D | null) {
         this.#ctx = value;
-    }
+    }*/
 
     clone(): Cell {
         return new Cell(this.posX, this.posY, this.isAlive);
@@ -57,7 +57,7 @@ export class Cell implements CellInterface {
             posX: this.#posX,
             posY: this.#posY,
             isAlive: this.#isAlive,
-            ctx: this.#ctx
+            //ctx: this.#ctx
         })
     }
 }
