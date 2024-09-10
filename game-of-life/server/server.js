@@ -52,6 +52,26 @@ app.post('/add-world', (req, res) => {
   });
 });
 
+app.get('/get-worlds', (req, res) => {
+  const fileName = path.join(__dirname, "../data/data.json");
+
+  fs.readFile(fileName, 'utf-8', (err, data) => {
+    if (err) {
+      return res.status(500).send(`Error when opening the file: ${err}`);
+    }
+
+    let jsonData;
+    try {
+      jsonData = JSON.parse(data);
+    } catch (parseErr) {
+      return res.status(500).send(`Error while parsing the JSON data: ${parseErr}`);
+    }
+
+    res.json(jsonData); // Send the response only once
+  });
+});
+
+
 
 // Start the server
 app.listen(port, () => {
