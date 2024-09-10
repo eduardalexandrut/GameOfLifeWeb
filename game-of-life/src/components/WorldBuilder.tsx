@@ -8,6 +8,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col"
 import React from "react";
+import {v4 as uuidv4} from 'uuid';
 
 
 type propType = {
@@ -30,7 +31,8 @@ const WorldBuilder = (props:propType) => {
             const columns = parseInt(widthRef.current.value);
             const rows = parseInt(heightRef.current.value);
             const name = nameRef.current.value;
-            const newWorld = new World(columns, rows, name);
+            const id = uuidv4()
+            const newWorld = new World(id,columns, rows, name);
             //world = newWorld
             setWorld(newWorld);
             props.setView(View.Player);

@@ -62,7 +62,7 @@ const WorldPlayer = (props:any) => {
         const jsonData = world.convertToJSON();
         console.log(jsonData)
         try {
-            const response = await fetch('http://localhost:5000/upload-world', {
+            const response = await fetch('http://localhost:5000/add-world', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',

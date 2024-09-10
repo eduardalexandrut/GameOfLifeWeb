@@ -7,15 +7,22 @@ export default function WorldSelector() {
 
   const [worlds, setWorlds] = useState<Array<World>>([]);
 
-  useEffect(() =>{
-    fetch('http://localhost:3000/get-worlds')
-    .then((res) => {return res.json()})
-    .then(data => {
-      console.log(data);
-      setWorlds(data);
-    })
-    .catch((err) => console.log(err))
-  }, [])
+  useEffect(() => {console.log("ciao")
+    fetch('http://localhost:5000/get-worlds')
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return res.json();
+      })
+      .then(data => {
+        console.log(data);
+        //setWorlds(data); // Ensure you are setting state or handling data correctly
+      })
+      .catch(err => console.error('Fetch error:', err));
+      
+  }, []);
+  
   return (
     <Container>
       <Row>

@@ -155,15 +155,15 @@ const Canvas2 = forwardRef<CanvasRef, propType>((props, ref) => {
             //Get x, y coordinates of the users' click, taking into account the offset and the currentZoom.
             const rect = canvasRef.current.getBoundingClientRect()
             //const {clientX, clientY} = getMouseCoordinates(e);
-            const clientX = e.clientX - rect.left
-            const clientY = e.clientY - rect.top
+            const clientX = e.clientX// - rect.left
+            const clientY = e.clientY// - rect.top
 
             // Apply any canvas transformations
-            const transformedX = (clientX + offset.x * props.zoom)/ props.zoom ;
-            const transformedY = (clientY + offset.y * props.zoom)/props.zoom;
+            const transformedX = (clientX - offset.x * props.zoom + zoomOffset.x)/ props.zoom;
+            const transformedY = (clientY - offset.y * props.zoom + zoomOffset.y)/props.zoom;
             
             //Get the i, j indexes of the corresponding cell.
-            const coordX = Math.floor(transformedX/ CELL_WIDTH );
+            const coordX = Math.floor(transformedX / CELL_WIDTH);
             const coordY = Math.floor(transformedY/ CELL_HEIGHT);
     
             //Select the clicked cell and change isAlive field.

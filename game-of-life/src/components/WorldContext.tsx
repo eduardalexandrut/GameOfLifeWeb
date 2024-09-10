@@ -1,6 +1,5 @@
 import { ReactNode, createContext, useContext, useState, Provider } from "react";
 import { World } from "../classes/World";
-
 /*interface WorldProviderProps {
     children: ReactNode;
   }
@@ -34,7 +33,7 @@ export const useSetWorldContext = () => useContext(UpdateWorldContext);
 
 // Define the context provider
 export const WorldProvider = ({ children }: { children: ReactNode }) => {
-    const [world, setWorld] = useState<World | null>(new World(-1,-1,'new'));
+    const [world, setWorld] = useState<World | null>(new World(-1,-1,-1,'new'));
 
     const updateWorld = (world:World) => {
         setWorld(world);

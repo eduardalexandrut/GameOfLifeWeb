@@ -8,58 +8,50 @@ const port = 5000;
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
-app.use(bodyParser.json({ limit: '10mb' })); // For JSON payloads
+app.use(bodyParser.json({ limit: '100mb' })); // For JSON payloads
 // Enable CORS for all origins
 app.use(cors());
 
-// POST endpoint to handle JSON file uploads
-app.post('/upload-world', (req, res) => {
-  const jsonData = req.body;
+app.post('/add-world', (req, res) => {
+  console.log('Received data:', req.body); 
+  const filePath = path.join(__dirname, '../data/data.json'); // Absolute path to the JSON file
+  const new_world = req.body; // JSON object to be added
 
-  // Check if jsonData has a 'name' property
-  if (!jsonData.name) {
-    return res.status(400).send('Invalid data: "name" property is required');
-  }
-
-  const filePath = path.join(__dirname, '../game-of-life-data', `${jsonData.name}.json`);
-  const fileDir = path.dirname(filePath);
-
-  // Create directory if it doesn't exist
-  if (!fs.existsSync(fileDir)) {
-    fs.mkdirSync(fileDir, { recursive: true });
-  }
-
-  // Write the JSON data to the file
-  fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), (err) => {
+  // Read the current data from the file
+  fs.readFile(filePath, 'utf-8', (err, data) => {
     if (err) {
-      return res.status(500).send('Error saving the file');
+      console.error(`Error reading file: ${err}`);
+      return res.status(500).send(`Error when reading the file: ${err}`);
     }
-    res.send('File saved successfully');
+
+    let jsonArray;
+    try {
+      jsonArray = JSON.parse(data);
+      if (!Array.isArray(jsonArray)) {
+        throw new Error('JSON data is not an array');
+      }
+    } catch (parseError) {
+      return res.status(500).send(`Error parsing JSON data: ${parseError}`);
+    }
+    console.log(jsonArray)
+
+    // Add the new world to the array
+    if (!jsonArray.includes(new_world)){
+      jsonArray.push(new_world);
+    } else {
+      jsonArray.map((world) => world.id === new_world.id ? new_world : world)
+    }
+
+    // Write the updated array back to the file
+    fs.writeFile(filePath, JSON.stringify(jsonArray, null, 2), 'utf-8', (writeError) => {
+      if (writeError) {
+        return res.status(500).send(`Error writing to file: ${writeError}`);
+      }
+      res.status(200).send('World successfully added to the database.');
+    });
   });
 });
 
-//GET endpoint to get all the worlds and convert them from json files to objects.
-app.get('/get-worlds', (req,res) => {
-  const directoryPath = path.join(__dirname, '../game-of-life-data');
-
-  fs.readdirSync(directoryPath, (err, files) => {
-    if (err) {
-      return res.status(500).send(`Unable to open directory: ${err}`)
-    }
-
-    const jsonFiles = files.filter((file) => path.extname(file) === ".json");//Filter only .json files.
-    const worlds = [];
-
-    jsonFiles.forEach(file => {
-      const filePath = path.join(directoryPath, file);
-      const data = JSON.parse(fs.readFileSync(filePath,'utf-8'));
-      //const world = World.convertFromJSON(data);
-      worlds.push(data);
-    });
-
-    res.json(worlds);
-  })
-})
 
 // Start the server
 app.listen(port, () => {
