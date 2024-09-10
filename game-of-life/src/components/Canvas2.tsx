@@ -48,13 +48,13 @@ const Canvas2 = forwardRef<CanvasRef, propType>((props, ref) => {
 
     useLayoutEffect(() => {
         if (canvasRef.current) {
-            canvasRef.current.width = window.innerWidth * 0.95;
-            canvasRef.current.height = window.innerHeight *0.85;
+            canvasRef.current.width = window.innerWidth ;
+            canvasRef.current.height = window.innerHeight;
             contextRef.current = canvasRef.current.getContext("2d");
 
             contextRef.current.clearRect(0,0, canvasRef.current.width, canvasRef.current.height)
 
-            //Calculate the zoom offset.
+            //Calculate the zoom offset by comparing the zoomed canvas and the actual size of the canvas.
             const scaleWidth = canvasRef.current.width * props.zoom;
             const scaleHeight = canvasRef.current.height * props.zoom;
 
@@ -63,7 +63,7 @@ const Canvas2 = forwardRef<CanvasRef, propType>((props, ref) => {
             setZoomOffset({x:scaledOffsetX, y:scaledOffsetY});
 
             contextRef.current.save()
-            contextRef.current.translate(offset.x * props.zoom - scaledOffsetX, offset.y * props.zoom - scaledOffsetY)
+            contextRef.current.translate(-(offset.x * props.zoom /*- scaledOffsetX*/), -(offset.y * props.zoom /*- scaledOffsetY*/))
             contextRef.current.scale(props.zoom, props.zoom)
             draw(CELL_WIDTH, offset.x, offset.y, props.zoom)
             contextRef.current.restore()
@@ -116,11 +116,10 @@ const Canvas2 = forwardRef<CanvasRef, propType>((props, ref) => {
 
     const handleMouseMove = (event) => {
         if (isDragging) {
-        console.log(`${offset.x}, ${offset.y}`)
         /**Calculate by how many pixels we have dragged along the x and y axis, counting from the starting point where we have previously clicked. */
         const {clientX, clientY} = getMouseCoordinates(event);
-        const dx = clientX - dragStart.x;
-        const dy = clientY - dragStart.y;
+        const dx = event.clientX - dragStart.x;
+        const dy = event.clientY - dragStart.y;
 
         //if (newOffest.x > -50 && newOffest.y > -50 && newOffest.x < worldSize - canvasRef.current.width + 50 && newOffest.y < worldSize - canvasRef.current.height + 50) {
             setOffset((prevOffset) => ({
@@ -130,7 +129,7 @@ const Canvas2 = forwardRef<CanvasRef, propType>((props, ref) => {
         // }
             /**Reset the new starting point as the last point to which we dragged, for the next drag. Redraw the canvas. */
             setDragStart({x:event.clientX, y:event.clientY})
-        }
+        } 
     }
 
     const handleMouseUp = () => {
@@ -154,34 +153,45 @@ const Canvas2 = forwardRef<CanvasRef, propType>((props, ref) => {
           if (canvasRef.current && contextRef.current) {
             console.log(offset)
             //Get x, y coordinates of the users' click, taking into account the offset and the currentZoom.
-            const rect = canvasRef.current.getBoundingClientRect();
-            const {clientX, clientY} = getMouseCoordinates(e);
+            const rect = canvasRef.current.getBoundingClientRect()
+            //const {clientX, clientY} = getMouseCoordinates(e);
+            const clientX = e.clientX - rect.left
+            const clientY = e.clientY - rect.top
+
+            // Apply any canvas transformations
+            const transformedX = (clientX + offset.x * props.zoom)/ props.zoom ;
+            const transformedY = (clientY + offset.y * props.zoom)/props.zoom;
             
             //Get the i, j indexes of the corresponding cell.
-            const coordX = Math.floor(clientX / CELL_WIDTH );
-            const coordY = Math.floor(clientY/ CELL_HEIGHT);
+            const coordX = Math.floor(transformedX/ CELL_WIDTH );
+            const coordY = Math.floor(transformedY/ CELL_HEIGHT);
     
             //Select the clicked cell and change isAlive field.
-            const cell = world.cells[coordY][coordX];
-            cell.isAlive = !cell.isAlive;
-    
-            //Redraw the clicked cell.
-            world.emptyRedoStack();
-            setAction((pAction) => pAction+1)
+            if ((coordX == 0 || coordX <= world.columns) && (coordY == 0 || coordY <= world.rows)) {
+              const cell = world.cells[coordY][coordX];
+              cell.isAlive = !cell.isAlive;
+      
+              //Redraw the clicked cell.
+              world.emptyRedoStack();
+              setAction((pAction) => pAction+1)
+            }
           }
         }
       };
 
     //Function that returns the true client.x, client.y after taking into consideration zoom and pan.
     const getMouseCoordinates = (event) => {
-        const clientX = (event.clientX - offset.x * props.zoom + zoomOffset.x) / props.zoom;
-        const clientY = (event.clientY - offset.y * props.zoom + zoomOffset.y) / props.zoom;
+        const clientX = (event.clientX - offset.x /** props.zoom*/ + zoomOffset.x) /// props.zoom;
+        const clientY = (event.clientY - offset.y /* props.zoom*/ + zoomOffset.y) /// props.zoom;
         return {clientX, clientY}
     }
 
     
     return (
         <React.Fragment>
+        <p>ZoomOffset: {zoomOffset.x} {zoomOffset.y}</p>
+        <p>Offset: {offset.x} {offset.y}</p>
+        <p>x: {} y: {} alive: {}</p>
           <canvas
             ref={canvasRef}
             style={{display: 'block',cursor: isDragging ? 'grabbing' : 'grab' }}
@@ -189,6 +199,7 @@ const Canvas2 = forwardRef<CanvasRef, propType>((props, ref) => {
             onMouseMove={(event)=>handleMouseMove(event)}
             onMouseDown={(event) => handleMouseDown(event)}
             onMouseUp={handleMouseUp}
+            onMouseLeave={()=>setIsDragging(false)}
           ></canvas>
     
         </React.Fragment>

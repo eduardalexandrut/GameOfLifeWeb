@@ -155,6 +155,7 @@ const WorldPlayer = (props:any) => {
                         isDrawing={isDrawing}
                         zoom = {zoom}
                         tool = {tool}
+                       
                     />
       
       </React.Fragment>
