@@ -4,7 +4,6 @@ import Stack from "./Stack";
 interface WorldInterface {
     id:number,
     columns: number,
-    generations:number,
     rows: number,
     name: string,
     cells: Cell[][],
@@ -23,7 +22,6 @@ const relativePositions = [
 
 export class World implements WorldInterface{
     #id: number;
-    #generations:number;
     #columns: number;
     #rows: number;
     #name: string;
@@ -31,13 +29,12 @@ export class World implements WorldInterface{
     #undoStack: Stack<Cell[][]>;
     #redoStack: Stack<Cell[][]>
 
-    constructor(id:number,columns: number, generations:number, rows: number, name: string) {
+    constructor(id:number, columns: number, rows: number, name: string, cells: Cell[][]) {
       this.#id = id;
-      this.#generations = generations;
       this.#columns = columns;
       this.#rows = rows;
       this.#name = name;
-      this.#cells = this.#initialize_random();
+      this.#cells = cells ? cells : this.#initialize_random();
       this.#undoStack = new Stack<Cell[][]>
       this.#redoStack = new Stack<Cell[][]>
       }
@@ -70,14 +67,6 @@ export class World implements WorldInterface{
       // Define getters and setters
       get id(): number {
         return this.#id;
-      }
-
-      get generations(): number {
-        return this.#generations;
-      }
-
-      set generations(value:number) {
-        this.#generations = value;
       }
 
       get columns(): number {
@@ -183,10 +172,6 @@ export class World implements WorldInterface{
       this.#redoStack = new Stack<Cell[][]>;
     }
 
-    /*setContext(ctx:CanvasRenderingContext2D): void {
-        this.#cells.forEach((row) =>row.forEach((cell) => cell.ctx = ctx));
-    }*/
-
     convertToJSON(): string {
       const world:string = JSON.stringify({
         id:this.#id,
@@ -199,8 +184,20 @@ export class World implements WorldInterface{
     }
 
     static convertFromJSON(json:any): World {
-      const world = new World(json.id,json.generations, json.name, json.columns, json.rows);
+      const world = new World(json.id, json.name, json.columns, json.rows, json.cells);
       return world;
     }
+
+    // Method to convert the World instance to a JSON object
+    toJsonObject() {
+      return {
+        id: this.#id,
+        generations:0,
+        columns: this.#columns,
+        rows: this.#rows,
+        name: this.#name,
+        cells: this.#cells
+      };
+  }
 
 }

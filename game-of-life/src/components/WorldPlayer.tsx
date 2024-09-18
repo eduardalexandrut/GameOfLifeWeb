@@ -7,7 +7,7 @@ import RedoIcon from '@mui/icons-material/Redo';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import PauseIcon from '@mui/icons-material/Pause';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { useWorldContext } from "./WorldContext";
+import { useSetWorldContext, useWorldContext } from "./WorldContext";
 import { Container,Row, Col } from "react-bootstrap";
 import e from "express";
 import Canvas2 from "./Canvas2";
@@ -32,6 +32,7 @@ const WorldPlayer = (props:any) => {
     const [tool, setTool] = useState<Tools>(Tools.Draw)
     const canvasRef = useRef(null);
     const world = useWorldContext();
+    const {updateWorldGenerations} = useSetWorldContext();
 
     const handleIsPlaying = (button) => {
         setIsPlaying((prevPlay) =>!prevPlay);
@@ -61,8 +62,9 @@ const WorldPlayer = (props:any) => {
     }
 
     const saveWorld = async () => {
-        const jsonData = world.convertToJSON();
-        console.log(jsonData)
+        let worldJSON = world.toJsonObject();
+        worldJSON.generations = generation;
+        const jsonData = JSON.stringify(worldJSON);
         try {
             const response = await fetch('http://localhost:5000/add-world', {
               method: 'POST',

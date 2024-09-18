@@ -22,7 +22,7 @@ const WorldBuilder = (props:propType) => {
     const heightRef = useRef<HTMLInputElement>(null);
     const nameRef = useRef<HTMLInputElement>(null);
     const world = useWorldContext();
-    const setWorld = useSetWorldContext();
+    const updateWorld = useSetWorldContext();
    const [width, setWidth] = useState(2);
    const [height, setHeight] = useState(2);
 
@@ -30,11 +30,11 @@ const WorldBuilder = (props:propType) => {
         if (widthRef.current && heightRef.current && nameRef.current) {
             const columns = parseInt(widthRef.current.value);
             const rows = parseInt(heightRef.current.value);
-            const name = nameRef.current.value;
+            const name = nameRef.current.value.length > 0 ? nameRef.current.value: "Unamed World";
             const id = uuidv4()
-            const newWorld = new World(id,columns, rows, name);
+            const newWorld = new World(id,columns, rows, name, null);
             //world = newWorld
-            setWorld(newWorld);
+            updateWorld(newWorld);
             props.setView(View.Player);
         }
     }

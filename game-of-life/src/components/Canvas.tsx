@@ -160,7 +160,7 @@ const Canvas = forwardRef<CanvasRef, propType>((props, ref) => {
 
 
   const evolve = () => {
-    world.evolve(offset.x, offset.y);
+    world.evolve();
     requestAnimationFrame(() =>draw(CELL_HEIGHT, offset.x, offset.y, props.currentZoom))
     props.setGeneration(prevG => prevG + 1);// Increase the generation count
   };

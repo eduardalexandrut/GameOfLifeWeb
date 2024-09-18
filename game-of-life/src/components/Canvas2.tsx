@@ -4,7 +4,7 @@ import { Context } from "../App";
 import { World } from "../classes/World";
 import Stack from "../classes/Stack";
 import {Actions, Tools } from "./WorldPlayer";
-import { useWorldContext } from "./WorldContext";
+import { useSetWorldContext, useWorldContext } from "./WorldContext";
 import { render } from "@testing-library/react";
 import useWindowSize from "../hooks/useWindowSize";
 
@@ -37,8 +37,8 @@ const Canvas2 = forwardRef<CanvasRef, propType>((props, ref) => {
     const [offset, setOffset] = useState({x:0,y:0});
     const [dragStart, setDragStart] = useState({x:0,y:0});
     const [isDragging, setIsDragging] = useState<boolean>(false);
-
     const[action, setAction] = useState(0);
+    const {updateWorldGenerations} = useSetWorldContext();
 
     /**I use this hook in order to call handleUndoRedo() function from parent component WorldPlayer. */
     useImperativeHandle(ref, () => ({
@@ -67,8 +67,9 @@ const Canvas2 = forwardRef<CanvasRef, propType>((props, ref) => {
             contextRef.current.save()
             contextRef.current.translate(offset.x * props.zoom - scaledOffsetX, offset.y * props.zoom - scaledOffsetY)
             contextRef.current.scale(props.zoom, props.zoom)
-            draw(DEF_CELL_WIDTH, props.zoom)
-            contextRef.current.restore()
+            draw(DEF_CELL_WIDTH, props.zoom);
+            //updateWorldGenerations(props.generation);
+            contextRef.current.restore();
         }
        //contextRef.current.clearRect(0,0, world.cells.length * DEF_CELL_WIDTH * props.zoom, world.cells.length * DEF_CELL_WIDTH * props.zoom)
     }, [props.generation, props.speed, offset, props.zoom, action]);
