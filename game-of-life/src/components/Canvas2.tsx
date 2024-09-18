@@ -12,6 +12,7 @@ type propType = {
     isPlaying: boolean,
     generation: number,
     setGeneration: React.Dispatch<React.SetStateAction<number>>,
+    setZoom: React.Dispatch<React.SetStateAction<number>>,
     speed: number,
     history: Stack<Cell[][]>,
     setHistory: React.Dispatch<React.SetStateAction<Stack<Cell[][]>>>,
@@ -20,8 +21,8 @@ type propType = {
     zoom: number,
     tool: Tools
 }
-const CELL_WIDTH = 50;
-const CELL_HEIGHT = 50;
+const DEF_CELL_WIDTH = 50;
+const DEF_CELL_HEIGHT = 50;
 
 interface CanvasRef {
   handleUndoRedo: (action: Actions) => void;
@@ -42,9 +43,10 @@ const Canvas2 = forwardRef<CanvasRef, propType>((props, ref) => {
     /**I use this hook in order to call handleUndoRedo() function from parent component WorldPlayer. */
     useImperativeHandle(ref, () => ({
         handleUndoRedo(action: Actions) {
-        handleUndoRedo(action);
+          handleUndoRedo(action);
         },
     }));
+
 
     useLayoutEffect(() => {
         if (canvasRef.current) {
@@ -63,12 +65,12 @@ const Canvas2 = forwardRef<CanvasRef, propType>((props, ref) => {
             setZoomOffset({x:scaledOffsetX, y:scaledOffsetY});
 
             contextRef.current.save()
-            contextRef.current.translate(-(offset.x * props.zoom /*- scaledOffsetX*/), -(offset.y * props.zoom /*- scaledOffsetY*/))
+            contextRef.current.translate(offset.x * props.zoom - scaledOffsetX, offset.y * props.zoom - scaledOffsetY)
             contextRef.current.scale(props.zoom, props.zoom)
-            draw(CELL_WIDTH, offset.x, offset.y, props.zoom)
+            draw(DEF_CELL_WIDTH, props.zoom)
             contextRef.current.restore()
         }
-       //contextRef.current.clearRect(0,0, world.cells.length * CELL_WIDTH * props.zoom, world.cells.length * CELL_WIDTH * props.zoom)
+       //contextRef.current.clearRect(0,0, world.cells.length * DEF_CELL_WIDTH * props.zoom, world.cells.length * DEF_CELL_WIDTH * props.zoom)
     }, [props.generation, props.speed, offset, props.zoom, action]);
 
     useEffect(() => {
@@ -80,7 +82,7 @@ const Canvas2 = forwardRef<CanvasRef, propType>((props, ref) => {
     },[props.isPlaying, props.speed])
 
     /**Function to draw the cells on the canvas, based on the offset and the zoom. */
-  const draw = (size:number, offsetX:number, offsetY:number, zoom:number) => {
+  const draw = (size:number, zoom:number) => {
     if(canvasRef.current && contextRef.current) {
       //contextRef.current.clearRect(0,0,canvasRef.current.width, canvasRef.current.height)
       world.cells.forEach(row=>{
@@ -123,8 +125,8 @@ const Canvas2 = forwardRef<CanvasRef, propType>((props, ref) => {
 
         //if (newOffest.x > -50 && newOffest.y > -50 && newOffest.x < worldSize - canvasRef.current.width + 50 && newOffest.y < worldSize - canvasRef.current.height + 50) {
             setOffset((prevOffset) => ({
-            x: prevOffset.x - dx,
-            y: prevOffset.y - dy
+            x: Math.floor(prevOffset.x + dx/ props.zoom),
+            y: Math.floor(prevOffset.y + dy/ props.zoom)
             }))
         // }
             /**Reset the new starting point as the last point to which we dragged, for the next drag. Redraw the canvas. */
@@ -151,23 +153,25 @@ const Canvas2 = forwardRef<CanvasRef, propType>((props, ref) => {
         //Draw action.
         if (!props.isPlaying && props.tool == Tools.Draw) {
           if (canvasRef.current && contextRef.current) {
-            console.log(offset)
             //Get x, y coordinates of the users' click, taking into account the offset and the currentZoom.
             const rect = canvasRef.current.getBoundingClientRect()
             //const {clientX, clientY} = getMouseCoordinates(e);
-            const clientX = e.clientX// - rect.left
-            const clientY = e.clientY// - rect.top
+            const coordX = Math.floor((e.clientX - rect.left - offset.x * props.zoom) / DEF_CELL_WIDTH * props.zoom);
+            const coordY = Math.floor((e.clientY - rect.top - offset.y * props.zoom) / DEF_CELL_HEIGHT * props.zoom);
+            console.log(`x:${coordX}`)
+            /*const clientX = e.clientX - rect.left 
+            const clientY = e.clientY - rect.top 
 
             // Apply any canvas transformations
-            const transformedX = (clientX - offset.x * props.zoom + zoomOffset.x)/ props.zoom;
-            const transformedY = (clientY - offset.y * props.zoom + zoomOffset.y)/props.zoom;
+            const transformedX = (clientX - offset.x * props.zoom )/ props.zoom;
+            const transformedY = (clientY - offset.y * props.zoom )/props.zoom;
             
             //Get the i, j indexes of the corresponding cell.
-            const coordX = Math.floor(transformedX / CELL_WIDTH);
-            const coordY = Math.floor(transformedY/ CELL_HEIGHT);
+            const coordX = Math.floor(transformedX / DEF_CELL_WIDTH);
+            const coordY = Math.floor(transformedY/ DEF_CELL_HEIGHT);*/
     
             //Select the clicked cell and change isAlive field.
-            if ((coordX == 0 || coordX <= world.columns) && (coordY == 0 || coordY <= world.rows)) {
+            if ((coordX >= 0 || coordX <= world.columns) && (coordY >= 0 || coordY <= world.rows)) {
               const cell = world.cells[coordY][coordX];
               cell.isAlive = !cell.isAlive;
       
@@ -178,6 +182,14 @@ const Canvas2 = forwardRef<CanvasRef, propType>((props, ref) => {
           }
         }
       };
+    
+    const handleWheel = (e:React.WheelEvent) => {
+      e.preventDefault()
+      const zoomDirection = e.deltaY > 0 ? 0.1 : - 0.1;
+      const newZoom = Math.min(Math.max(props.zoom + zoomDirection,0.1), 3);
+      props.setZoom(newZoom);
+    }
+
 
     //Function that returns the true client.x, client.y after taking into consideration zoom and pan.
     const getMouseCoordinates = (event) => {
@@ -200,6 +212,7 @@ const Canvas2 = forwardRef<CanvasRef, propType>((props, ref) => {
             onMouseDown={(event) => handleMouseDown(event)}
             onMouseUp={handleMouseUp}
             onMouseLeave={()=>setIsDragging(false)}
+            onWheel={(event)=>handleWheel(event)}
           ></canvas>
     
         </React.Fragment>

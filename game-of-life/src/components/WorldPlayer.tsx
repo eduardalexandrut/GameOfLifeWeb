@@ -25,7 +25,7 @@ const WorldPlayer = (props:any) => {
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
     const [speed, setSpeed] = useState<number>(500);
-    const [zoom, setzoom] = useState<number>(1);
+    const [zoom, setZoom] = useState<number>(1);
     const [generation, setGeneration] = useState<number>(0);
     const [history, setHistory] = useState<Stack<Cell[][]>>(new Stack<Cell[][]>());
     const [historyAction, setHistoryAction] = useState<Actions| null>(null);
@@ -49,7 +49,9 @@ const WorldPlayer = (props:any) => {
     }
 
     const handleZoom = (value:number) => {
-        setzoom(prevzoom => prevzoom + value)
+        //Set an upper and lower bound to the zoom.
+        const newZoom = Math.min(Math.max(zoom + value, 0.1), 3);
+        setZoom(prevzoom => newZoom)
     }
 
 
@@ -154,6 +156,7 @@ const WorldPlayer = (props:any) => {
                         historyAction={historyAction}
                         isDrawing={isDrawing}
                         zoom = {zoom}
+                        setZoom = {setZoom}
                         tool = {tool}
                        
                     />
