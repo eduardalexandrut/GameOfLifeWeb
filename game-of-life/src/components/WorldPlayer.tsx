@@ -51,7 +51,7 @@ const WorldPlayer = (props:any) => {
     const handleZoom = (value:number) => {
         //Set an upper and lower bound to the zoom.
         const newZoom = Math.min(Math.max(zoom + value, 0.1), 3);
-        setZoom(prevzoom => newZoom)
+        setZoom(newZoom)
     }
 
 

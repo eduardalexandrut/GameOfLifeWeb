@@ -105,7 +105,7 @@ const Canvas2 = forwardRef<CanvasRef, propType>((props, ref) => {
   }
 
   const evolve = () => {
-    world.evolve(offset.x, offset.y);
+    world.evolve();
     props.setGeneration(prevG => prevG + 1);// Increase the generation count
   };
 

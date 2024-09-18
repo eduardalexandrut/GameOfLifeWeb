@@ -4,6 +4,7 @@ import Stack from "./Stack";
 interface WorldInterface {
     id:number,
     columns: number,
+    generations:number,
     rows: number,
     name: string,
     cells: Cell[][],
@@ -22,6 +23,7 @@ const relativePositions = [
 
 export class World implements WorldInterface{
     #id: number;
+    #generations:number;
     #columns: number;
     #rows: number;
     #name: string;
@@ -29,8 +31,9 @@ export class World implements WorldInterface{
     #undoStack: Stack<Cell[][]>;
     #redoStack: Stack<Cell[][]>
 
-    constructor(id:number,columns: number, rows: number, name: string) {
+    constructor(id:number,columns: number, generations:number, rows: number, name: string) {
       this.#id = id;
+      this.#generations = generations;
       this.#columns = columns;
       this.#rows = rows;
       this.#name = name;
@@ -38,7 +41,7 @@ export class World implements WorldInterface{
       this.#undoStack = new Stack<Cell[][]>
       this.#redoStack = new Stack<Cell[][]>
       }
-  id: number;
+
       
       #initialize_random(): Cell[][] {
          //Create the 2d matrix of cells.
@@ -65,6 +68,18 @@ export class World implements WorldInterface{
       }
     
       // Define getters and setters
+      get id(): number {
+        return this.#id;
+      }
+
+      get generations(): number {
+        return this.#generations;
+      }
+
+      set generations(value:number) {
+        this.#generations = value;
+      }
+
       get columns(): number {
         return this.#columns;
       }
@@ -105,7 +120,7 @@ export class World implements WorldInterface{
         return this.#redoStack;
       }
 
-      evolve(offsetX:number, offsetY:number): void {
+      evolve(): void {
         const prevState = this.#cells
         this.#undoStack.push(prevState)
         const newCells = this.#cells.map((row, i) => {
@@ -184,7 +199,7 @@ export class World implements WorldInterface{
     }
 
     static convertFromJSON(json:any): World {
-      const world = new World(json.id, json.name, json.columns, json.rows);
+      const world = new World(json.id,json.generations, json.name, json.columns, json.rows);
       return world;
     }
 
