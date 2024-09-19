@@ -13,6 +13,50 @@ app.use(bodyParser.json({ limit: '100mb' })); // For JSON payloads
 app.use(cors());
 
 app.post('/add-world', (req, res) => {
+  const filePath = path.join(__dirname, `../data/${req.body.id}.json`);
+  const new_world = req.body;
+
+  fs.readFile(filePath, 'utf-8', (err, data) => {
+    if (err) {
+      if (err.code == "ENOENT") {
+        console.log("File not found, creating a new one");
+
+        const worldJSON = JSON.stringify(new_world, null, 2);
+        fs.writeFile(filePath, worldJSON, 'utf-8', (writeError) => {
+          if (writeError) {
+            // Return immediately after sending the response
+            return res.status(500).send(`Error writing to file: ${writeError}`);
+          }
+          // Return after successfully writing the file
+          return res.status(200).send('World successfully added to the database.');
+        });
+      } else {
+        // Return if there is another error reading the file
+        return res.status(500).send(`Error reading file: ${err}`);
+      }
+    } else {
+      // File exists, so we proceed to update it
+      let currentWorld;
+      try {
+        currentWorld = JSON.parse(data);
+      } catch (parseError) {
+        // Return if there's an error parsing the JSON
+        return res.status(500).send(`Error parsing JSON data: ${parseError}`);
+      }
+
+      // Write the new world data into the file
+      fs.writeFile(filePath, JSON.stringify(new_world, null, 2), 'utf-8', (writeError) => {
+        if (writeError) {
+          // Return if there's an error writing to the file
+          return res.status(500).send(`Error writing to file: ${writeError}`);
+        }
+        // Return after successfully updating the file
+        return res.status(200).send('World successfully updated.');
+      });
+    }
+  });
+});
+/*app.post('/add-world', (req, res) => {
   console.log('Received data:', req.body); 
   const filePath = path.join(__dirname, '../data/data.json'); // Absolute path to the JSON file
   const new_world = req.body; // JSON object to be added
@@ -50,7 +94,7 @@ app.post('/add-world', (req, res) => {
       res.status(200).send('World successfully added to the database.');
     });
   });
-});
+});*/
 
 app.get('/get-worlds', (req, res) => {
   const fileName = path.join(__dirname, "../data/data.json");

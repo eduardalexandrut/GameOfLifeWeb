@@ -8,8 +8,6 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import PauseIcon from '@mui/icons-material/Pause';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useSetWorldContext, useWorldContext } from "./WorldContext";
-import { Container,Row, Col } from "react-bootstrap";
-import e from "express";
 import Canvas2 from "./Canvas2";
 
 export enum Actions{
@@ -85,85 +83,83 @@ const WorldPlayer = (props:any) => {
         };
 
     return (
-       <React.Fragment>
-            <Row className="h-30 d-flex flex-row justify-content-between align-items-center">
-                <Col>
-                    <button className="startBtn" onClick = {(e)=>handleIsPlaying(e.target)}>Start</button>
-                </Col>
-                <Col>
-                    <div id="genBox">
-                        <ul>
-                            <li>{generation}</li>
-                            <li>Generation</li>
-                        </ul>
-                    </div>
-                </Col>
-                <Col className="d-flex flex-row align-items-center justify-content-around">
-                        <button className="control-btn" onClick={()=>decreaseSpeed()}>-</button>
+        <React.Fragment>
+        <div className="header-container">
+            <div className="button-container">
+                <button className="startBtn" onClick={(e) => handleIsPlaying(e.target)}>Start</button>
+            </div>
             
-                            <ul>
-                                <li>{speed}<span> ms</span></li>
-                                <li>Speed</li>
-                            </ul>
-                    
-                        <button className="control-btn" onClick={()=>increaseSpeed()}>+</button>
-                </Col>
-                <Col className="d-flex flex-row align-items-center justify-content-around">
-                        <button className="control-btn" onClick={()=>handleZoom(-0.1)}>-</button>
-                
-                            <ul>
-                                <li>{Math.round(zoom * 100)} <span>%</span></li>
-                                <li>Zoom</li>
-                            </ul>
-                    
-                        <button className="control-btn" onClick={()=>handleZoom(0.1)}>+</button>
-
-                </Col>
-                <Col>
-                    {isPlaying ? 
-                        <React.Fragment>
-                            <button className="startBtn" disabled>Undo</button>
-                            <button className="startBtn" disabled>Redo</button>
-                        </React.Fragment>
-                        :
-                        <React.Fragment>
-                            <button className="startBtn" onClick={()=>canvasRef.current.handleUndoRedo(Actions.UNDO)}>Undo</button>
-                            <button className="startBtn" onClick={()=>canvasRef.current.handleUndoRedo(Actions.REDO)}>Redo</button>
-                        </React.Fragment>
+            <div id="genBox" className="gen-box">
+                <ul>
+                    <li>{generation}</li>
+                    <li>Generation</li>
+                </ul>
+            </div>
+    
+            <div className="control-container">
+                <button className="control-btn" onClick={() => decreaseSpeed()}>-</button>
+                <ul>
+                    <li>{speed}<span> ms</span></li>
+                    <li>Speed</li>
+                </ul>
+                <button className="control-btn" onClick={() => increaseSpeed()}>+</button>
+            </div>
+    
+            <div className="control-container">
+                <button className="control-btn" onClick={() => handleZoom(-0.1)}>-</button>
+                <ul>
+                    <li>{Math.round(zoom * 100)} <span>%</span></li>
+                    <li>Zoom</li>
+                </ul>
+                <button className="control-btn" onClick={() => handleZoom(0.1)}>+</button>
+            </div>
+    
+            <div className="undo-redo-container">
+                {isPlaying ? 
+                    <React.Fragment>
+                        <button className="startBtn" disabled>Undo</button>
+                        <button className="startBtn" disabled>Redo</button>
+                    </React.Fragment>
+                    :
+                    <React.Fragment>
+                        <button className="startBtn" onClick={() => canvasRef.current.handleUndoRedo(Actions.UNDO)}>Undo</button>
+                        <button className="startBtn" onClick={() => canvasRef.current.handleUndoRedo(Actions.REDO)}>Redo</button>
+                    </React.Fragment>
                 }
-                </Col>
-                <Col>
-                    <select onChange={(event) => handleSetTool(event)} className="form-select">
-                        <option value={Tools.Draw}>Draw</option>
-                        <option value={Tools.Move}>Move</option>
-                    </select>                
-                </Col>
-                <Col>
-                    {isPlaying ? 
-                        <button id="saveBtn" disabled>Save</button>
-                        :
-                        <button id="saveBtn" onClick={saveWorld}>Save</button>
-                    }
-                </Col>
-            </Row>
-
-                    <Canvas2 
-                        ref = {canvasRef}
-                        isPlaying={isPlaying}
-                        generation = {generation}
-                        setGeneration = {setGeneration}
-                        speed={speed}
-                        history = {history}
-                        setHistory = {setHistory}
-                        historyAction={historyAction}
-                        isDrawing={isDrawing}
-                        zoom = {zoom}
-                        setZoom = {setZoom}
-                        tool = {tool}
-                       
-                    />
-      
-      </React.Fragment>
+            </div>
+    
+            <div className="tool-container">
+                <select onChange={(event) => handleSetTool(event)} className="form-select">
+                    <option value={Tools.Draw}>Draw</option>
+                    <option value={Tools.Move}>Move</option>
+                </select>                
+            </div>
+    
+            <div className="save-container">
+                {isPlaying ? 
+                    <button id="saveBtn" disabled>Save</button>
+                    :
+                    <button id="saveBtn" onClick={saveWorld}>Save</button>
+                }
+            </div>
+        </div>
+    
+        <Canvas2 
+            ref={canvasRef}
+            isPlaying={isPlaying}
+            generation={generation}
+            setGeneration={setGeneration}
+            speed={speed}
+            history={history}
+            setHistory={setHistory}
+            historyAction={historyAction}
+            isDrawing={isDrawing}
+            zoom={zoom}
+            setZoom={setZoom}
+            tool={tool}
+        />
+    </React.Fragment>
+    
     )
 }
 

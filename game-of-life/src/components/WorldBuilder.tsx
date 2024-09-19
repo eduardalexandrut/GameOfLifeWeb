@@ -2,11 +2,6 @@ import { useContext, useRef, useState } from "react"
 import { Context, View } from "../App"
 import { useSetWorldContext, useWorldContext, WorldContext } from "./WorldContext"
 import { World } from "../classes/World"
-import FloatingLabel from "react-bootstrap/FloatingLabel";
-import Form from "react-bootstrap/Form";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col"
 import React from "react";
 import {v4 as uuidv4} from 'uuid';
 import {Button} from './ui/Button';
@@ -50,51 +45,69 @@ const WorldBuilder = (props:propType) => {
     
     return (
         
-            <React.Fragment>
-                <Row className="mt-5 mb-5">
-                    <h1>New world</h1>
-                </Row>
-                <Button variant="outline">Click Me</Button>
-                <Row>
-                    <Col></Col>
-                    <Col lg={4} md={6} xs={10}>
-                            <Form id="builder-form" className="  d-flex flex-column gap-5">
-                                <Form.Group className="w-100 d-flex flex-column align-items-sm-start">
-                                    <Form.Control className="input" ref={nameRef} type="text" name="name" placeholder="World name" autoComplete="off" required/>
-                                </Form.Group>
-                                <Form.Group className="w-100 d-flex flex-column align-items-sm-start">
-                                    <Form.Label>Width: {width}</Form.Label>
-                                    <Form.Range ref={widthRef} min={10} max={150} value={width} onChange={e =>handleWidthChange(e)}/>
-                                </Form.Group>
-                                <Form.Group className="w-100 d-flex flex-column align-items-sm-start">
-                                    <Form.Label>Height: {height}</Form.Label>
-                                    <Form.Range ref={heightRef} min={10} max={150} value={height} onChange={e =>handleHeightChange(e)}/>
-                                </Form.Group>
-                            </Form>
-                            {/*
-                            <Form.Label>Initial Seed:</Form.Label>
-                            <Form.Check name = "default" label = "Default"/>
-                            <Form.Check name="Random" label = "Random"/>
-                            <Form.Label>% of alive cells:</Form.Label>
-                            <Form.Range min={0} max={100}/><*/}
-                    </Col>
-                    <Col></Col>
-                </Row>
-                <Row>
-                    <Col></Col>
-                    <Col lg={4} md={6} xs={10}>
-                    <Container id="builder-btn-container" className="d-flex flex-column justify-content-between flex-md-row gap-4 gap-md-3 mt-5">
-                        <Col>
-                            <button onClick={()=>handleCreate()}>Create</button>
-                        </Col>
-                        <Col>
-                            <button onClick={e=>props.setView(View.Menu)}>Discard</button>
-                        </Col>
-                    </Container>
-                    </Col>
-                    <Col></Col>
-                </Row>
-            </React.Fragment>
+        <React.Fragment>
+        <div className="mt-5 mb-5">
+            <h1>New world</h1>
+        </div>
+        <Button variant="destructive">Click</Button>
+        <div className="form-container">
+            <div className="form-column">
+                <form id="builder-form" className="d-flex flex-column gap-5">
+                    <div className="form-group">
+                        <input
+                            className="input"
+                            ref={nameRef}
+                            type="text"
+                            name="name"
+                            placeholder="World name"
+                            autoComplete="off"
+                            required
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Width: {width}</label>
+                        <input
+                            type="range"
+                            ref={widthRef}
+                            min={10}
+                            max={150}
+                            value={width}
+                            onChange={e => handleWidthChange(e)}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Height: {height}</label>
+                        <input
+                            type="range"
+                            ref={heightRef}
+                            min={10}
+                            max={150}
+                            value={height}
+                            onChange={e => handleHeightChange(e)}
+                        />
+                    </div>
+                </form>
+                {/* Uncomment if needed
+                <label>Initial Seed:</label>
+                <label>
+                    <input type="checkbox" name="default" />
+                    Default
+                </label>
+                <label>
+                    <input type="checkbox" name="random" />
+                    Random
+                </label>
+                <label>% of alive cells:</label>
+                <input type="range" min={0} max={100} />
+                */}
+            </div>
+        </div>
+        <div className="button-container">
+            <button onClick={() => handleCreate()}>Create</button>
+            <button onClick={e => props.setView(View.Menu)}>Discard</button>
+        </div>
+    </React.Fragment>
+    
             
    
     )

@@ -3,6 +3,10 @@
       "button": {
         "name": "Button",
         "path": "./src/components/ui/button"
+      },
+      "card": {
+        "name": "card",
+        "path": "./src/components/ui/card"
       }
     }
   }

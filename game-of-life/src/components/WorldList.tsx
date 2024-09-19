@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Container, Row, Col, Card, CardBody, CardTitle, CardText } from 'react-bootstrap'
 import { World } from '../classes/World'
-import { error } from 'console';
-import data from "../../data/data.json";
+import { Card, CardContent } from "./ui/card"
+import { Button } from './ui/Button';
 
 export default function WorldSelector() {
 
-  const [worlds, setWorlds] = useState<Array<World>>([]);
+  const [worlds, setWorlds] = useState<Array<any>>([]);
 
   useEffect(() => {
     fetch('http://localhost:5000/get-worlds')
@@ -25,7 +24,7 @@ export default function WorldSelector() {
 
   
   return (
-    <Container>
+    /*<Container>
       <Row>
         <Col>
           <h1 className='mt-5'>My Worlds</h1>
@@ -57,6 +56,51 @@ export default function WorldSelector() {
     <Col className='col-lg-2'></Col>
   </Row>
 ))}
-    </Container>
+    </Container>*/
+    <div className="container bg-blue mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6">My Game of Life Worlds</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {worlds.map((world) => (
+          <Card key={world.id} className="overflow-hidden m-3">
+            <CardContent className="p-0">
+              <div className="flex flex-col sm:flex-row">
+                <div className="w-full sm:w-1/3">
+                  {/*<Image
+                    src={world.image}
+                    alt={world.name}
+                    width={200}
+                    height={200}
+                    className="w-full h-full object-cover"
+                  />*/}
+                </div>
+                <div className="w-full sm:w-2/3 p-4">
+                  <h2 className="text-2xl font-semibold mb-2">{world.name}</h2>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Created on {"22 Feb 2023"/*world.dateCreated*/}
+                  </p>
+                  <div className="flex flex-wrap justify-between text-sm">
+                    <div>
+                      <p className="text-muted-foreground">
+                        {world.columns} x {world.rows}
+                      </p>
+                      <p className="font-medium">Dimensions</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">{world.generations}</p>
+                      <p className="font-medium">Generations</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">{"31 March 2024"/*world.lastUpdated*/}</p>
+                      <p className="font-medium">Last Updated</p>
+                    </div>
+                  </div>
+                </div>
+                <Button variant="outline">Save</Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
   )
 }
