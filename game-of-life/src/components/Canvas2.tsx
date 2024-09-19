@@ -34,7 +34,7 @@ const Canvas2 = forwardRef<CanvasRef, propType>((props, ref) => {
     const contextRef = useRef<CanvasRenderingContext2D | null>(null);
     const {width, height} = useWindowSize();
     const [zoomOffset, setZoomOffset] = useState({x:0,y:0})
-    const [offset, setOffset] = useState({x:0,y:0});
+    const [offset, setOffset] = useState({x:width/3,y:height/4});
     const [dragStart, setDragStart] = useState({x:0,y:0});
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const[action, setAction] = useState(0);
@@ -50,8 +50,8 @@ const Canvas2 = forwardRef<CanvasRef, propType>((props, ref) => {
 
     useLayoutEffect(() => {
         if (canvasRef.current) {
-            canvasRef.current.width = window.innerWidth ;
-            canvasRef.current.height = window.innerHeight;
+            canvasRef.current.width = window.innerWidth * 0.9 ;
+            canvasRef.current.height = window.innerHeight *0.7;
             contextRef.current = canvasRef.current.getContext("2d");
 
             contextRef.current.clearRect(0,0, canvasRef.current.width, canvasRef.current.height)

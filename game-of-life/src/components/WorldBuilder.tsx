@@ -23,8 +23,8 @@ const WorldBuilder = (props:propType) => {
     const nameRef = useRef<HTMLInputElement>(null);
     const world = useWorldContext();
     const updateWorld = useSetWorldContext();
-   const [width, setWidth] = useState(2);
-   const [height, setHeight] = useState(2);
+   const [width, setWidth] = useState(10);
+   const [height, setHeight] = useState(10);
 
     const handleCreate = () => {
         if (widthRef.current && heightRef.current && nameRef.current) {
@@ -62,11 +62,11 @@ const WorldBuilder = (props:propType) => {
                                 </Form.Group>
                                 <Form.Group className="w-100 d-flex flex-column align-items-sm-start">
                                     <Form.Label>Width: {width}</Form.Label>
-                                    <Form.Range ref={widthRef} min={2} max={50} value={width} onChange={e =>handleWidthChange(e)}/>
+                                    <Form.Range ref={widthRef} min={10} max={150} value={width} onChange={e =>handleWidthChange(e)}/>
                                 </Form.Group>
                                 <Form.Group className="w-100 d-flex flex-column align-items-sm-start">
                                     <Form.Label>Height: {height}</Form.Label>
-                                    <Form.Range ref={heightRef} min={2} max={50} value={height} onChange={e =>handleHeightChange(e)}/>
+                                    <Form.Range ref={heightRef} min={10} max={150} value={height} onChange={e =>handleHeightChange(e)}/>
                                 </Form.Group>
                             </Form>
                             {/*
