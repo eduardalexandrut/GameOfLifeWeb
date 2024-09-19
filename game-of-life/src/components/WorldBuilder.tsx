@@ -9,6 +9,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col"
 import React from "react";
 import {v4 as uuidv4} from 'uuid';
+import {Button} from './ui/Button';
 
 
 type propType = {
@@ -53,6 +54,7 @@ const WorldBuilder = (props:propType) => {
                 <Row className="mt-5 mb-5">
                     <h1>New world</h1>
                 </Row>
+                <Button variant="outline">Click Me</Button>
                 <Row>
                     <Col></Col>
                     <Col lg={4} md={6} xs={10}>
