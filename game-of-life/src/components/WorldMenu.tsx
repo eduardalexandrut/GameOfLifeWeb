@@ -1,5 +1,6 @@
 import React from 'react'
 import { View } from '../App'
+import { Button } from './ui/Button'
 type propType = {
     view: View,
     setView: React.Dispatch<React.SetStateAction<View>>

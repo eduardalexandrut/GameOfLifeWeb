@@ -9,6 +9,15 @@ import PauseIcon from '@mui/icons-material/Pause';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useSetWorldContext, useWorldContext } from "./WorldContext";
 import Canvas2 from "./Canvas2";
+import { Button } from "./ui/Button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
+import { Minus, Plus, Play, Square, Undo, Redo, Grid, ChevronDown } from 'lucide-react'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu"
 
 export enum Actions{
     UNDO,
@@ -28,23 +37,14 @@ const WorldPlayer = (props:any) => {
     const [history, setHistory] = useState<Stack<Cell[][]>>(new Stack<Cell[][]>());
     const [historyAction, setHistoryAction] = useState<Actions| null>(null);
     const [tool, setTool] = useState<Tools>(Tools.Draw)
+    const [showGrid, setShowGrid] = useState<boolean>(true);
     const canvasRef = useRef(null);
     const world = useWorldContext();
     const {updateWorldGenerations} = useSetWorldContext();
 
-    const handleIsPlaying = (button) => {
-        setIsPlaying((prevPlay) =>!prevPlay);
-        button.innerText = isPlaying ? "Start" : "Stop";
-    }
-
-    const increaseSpeed = () => {
-        setSpeed((prevS) => prevS + 100);
-    }
-
-    const decreaseSpeed = () => {
-        if (speed > 0) {
-            setSpeed((prevS) => prevS - 100);
-        }
+    const handleSpeed = (value:number) => {
+        const newSpeed = Math.min(Math.max(speed + value, 100), 3000)
+        setSpeed(newSpeed)
     }
 
     const handleZoom = (value:number) => {
@@ -54,10 +54,10 @@ const WorldPlayer = (props:any) => {
     }
 
 
-    const handleSetTool = (event) => {
-        const selectedTool = parseInt(event.target.value, 10) as Tools;
-        setTool(selectedTool)
-    }
+    const handleSetTool = (value: string) => {
+        const selectedTool = value === "draw" ? Tools.Draw : Tools.Move;
+        setTool(selectedTool);
+    };
 
     const saveWorld = async () => {
         let worldJSON = world.toJsonObject();
@@ -84,7 +84,7 @@ const WorldPlayer = (props:any) => {
 
     return (
         <React.Fragment>
-        <div className="header-container">
+       {/* <div className="header-container">
             <div className="button-container">
                 <button className="startBtn" onClick={(e) => handleIsPlaying(e.target)}>Start</button>
             </div>
@@ -144,7 +144,90 @@ const WorldPlayer = (props:any) => {
             </div>
         </div>
     
-        <Canvas2 
+        */}
+        <div className="p-4 bg-background border rounded-lg shadow-md flex flex-wrap gap-4 items-center">
+      <Button 
+        variant={isPlaying ? "destructive" : "default"}
+        onClick={() => setIsPlaying(!isPlaying)}
+      >
+        {isPlaying ? <Square className="mr-2 h-4 w-4" /> : <Play className="mr-2 h-4 w-4" />}
+        {isPlaying ? "Stop" : "Start"}
+      </Button>
+
+      <div className="flex flex-col items-center">
+        <span className="text-2xl font-bold">{generation}</span>
+        <span className="text-sm text-muted-foreground">Generation</span>
+      </div>
+
+      <div className="flex flex-col items-center">
+        <div className="flex items-center space-x-2">
+          <Button size="icon" variant="outline" onClick={() => handleZoom(-0.1)}>
+            <Minus className="h-4 w-4" />
+          </Button>
+          <span className="w-16 text-center">{Math.round(zoom * 100)}%</span>
+          <Button size="icon" variant="outline" onClick={() => handleZoom(0.1)}>
+            <Plus className="h-4 w-4" />
+          </Button>
+        </div>
+        <span className="text-sm text-muted-foreground">Zoom</span>
+      </div>
+
+      <div className="flex flex-col items-center">
+        <div className="flex items-center space-x-2">
+          <Button size="icon" variant="outline" onClick={() => handleSpeed(-100)}>
+            <Minus className="h-4 w-4" />
+          </Button>
+          <span className="w-16 text-center">{speed} ms</span>
+          <Button size="icon" variant="outline" onClick={() => handleSpeed(100)}>
+            <Plus className="h-4 w-4" />
+          </Button>
+        </div>
+        <span className="text-sm text-muted-foreground">Speed</span>
+      </div>
+
+      <Select onValueChange={event => handleSetTool(event)}>
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Select tool" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="draw">Draw</SelectItem>
+          <SelectItem value="move">Move</SelectItem>
+        </SelectContent>
+      </Select>
+
+      <div className="flex space-x-2">
+        <Button size="icon" variant="outline" onClick={()=>canvasRef.current.handleUndoRedo(Actions.UNDO)}>
+          <Undo className="h-4 w-4" />
+        </Button>
+        <Button size="icon" variant="outline" onClick={()=>canvasRef.current.handleUndoRedo(Actions.REDO)}>
+          <Redo className="h-4 w-4" />
+        </Button>
+      </div>
+
+      <Button 
+        variant="outline" 
+        onClick={() => setShowGrid(!showGrid)}
+      >
+        <Grid className="mr-2 h-4 w-4" />
+        {showGrid ? "Hide Grid" : "Show Grid"}
+      </Button>
+
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline">
+            Actions
+            <ChevronDown className="ml-2 h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem>Save</DropdownMenuItem>
+          <DropdownMenuItem>Exit</DropdownMenuItem>
+          <DropdownMenuItem>Save and Exit</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+
+    <Canvas2 
             ref={canvasRef}
             isPlaying={isPlaying}
             generation={generation}
