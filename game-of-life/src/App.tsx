@@ -39,7 +39,10 @@ function App() {
       break;
     case View.Player:
       content = (
-        <WorldPlayer/>
+        <WorldPlayer
+          view={view}
+          setView={setView}
+        />
         )
         break;
         case View.Selector:

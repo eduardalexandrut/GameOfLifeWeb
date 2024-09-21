@@ -18,6 +18,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu"
+import { viewComponentPropType } from "./WorldBuilder";
+import { View } from "../App";
 
 export enum Actions{
     UNDO,
@@ -28,7 +30,14 @@ export enum Tools {
     Draw,
     Move
 }
-const WorldPlayer = (props:any) => {
+
+export enum MenuAction {
+    SAVE,
+    EXIT,
+    SAVE_EXIT
+}
+
+const WorldPlayer = (props:viewComponentPropType) => {
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
     const [speed, setSpeed] = useState<number>(500);
@@ -53,6 +62,22 @@ const WorldPlayer = (props:any) => {
         setZoom(newZoom)
     }
 
+    const handleMenuAction = (action:MenuAction) => {
+        switch(action) {
+            case MenuAction.SAVE:
+                saveWorld();
+                break;
+            case MenuAction.EXIT:
+                props.setView(View.Menu);
+                break;
+            case MenuAction.SAVE_EXIT:
+                saveWorld();
+                props.setView(View.Menu);
+                break;
+            default:
+                saveWorld();
+        }
+    }
 
     const handleSetTool = (value: string) => {
         const selectedTool = value === "draw" ? Tools.Draw : Tools.Move;
@@ -220,9 +245,9 @@ const WorldPlayer = (props:any) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem>Save</DropdownMenuItem>
-          <DropdownMenuItem>Exit</DropdownMenuItem>
-          <DropdownMenuItem>Save and Exit</DropdownMenuItem>
+          <DropdownMenuItem onClick={()=>handleMenuAction(MenuAction.SAVE)}>Save</DropdownMenuItem>
+          <DropdownMenuItem onClick = {() => handleMenuAction(MenuAction.EXIT)}>Exit</DropdownMenuItem>
+          <DropdownMenuItem onClick = {() => handleMenuAction(MenuAction.SAVE_EXIT)}>Save and Exit</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

@@ -7,10 +7,16 @@ type propType = {
 }
 export default function WorldMenu(props:propType) {
     const handleView = (view:View) =>{
-        if (view == View.Builder) {
-            props.setView(View.Builder);
-        } else if(view == View.Selector) {
-            props.setView(View.Selector);
+        switch(view){
+            case View.Builder:
+                props.setView(View.Builder);
+                break;
+            case View.Selector:
+                props.setView(View.Selector);
+                break;
+            default:
+                props.setView(View.Menu)
+                break;
         }
     }
   return (
