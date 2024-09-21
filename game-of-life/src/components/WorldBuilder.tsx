@@ -5,6 +5,8 @@ import { World } from "../classes/World"
 import React from "react";
 import {v4 as uuidv4} from 'uuid';
 import {Button} from './ui/Button';
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group"
+
 
 
 type propType = {
