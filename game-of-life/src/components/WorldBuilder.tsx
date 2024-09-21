@@ -27,10 +27,6 @@ const DEF_RULES = "Any live cell with fewer than two live neighbours dies, as if
 
 
 const WorldBuilder = (props:viewComponentPropType) => {
-    const widthRef = useRef<HTMLInputElement>(null);
-    const heightRef = useRef<HTMLInputElement>(null);
-    const nameRef = useRef<HTMLInputElement>(null);
-    const world = useWorldContext();
     const updateWorld = useSetWorldContext();
     const [name, setName] = useState<string>("New World");
     const [width, setWidth] = useState<number>(10);

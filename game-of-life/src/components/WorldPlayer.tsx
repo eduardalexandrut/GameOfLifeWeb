@@ -109,148 +109,87 @@ const WorldPlayer = (props:viewComponentPropType) => {
 
     return (
         <React.Fragment>
-       {/* <div className="header-container">
-            <div className="button-container">
-                <button className="startBtn" onClick={(e) => handleIsPlaying(e.target)}>Start</button>
-            </div>
-            
-            <div id="genBox" className="gen-box">
-                <ul>
-                    <li>{generation}</li>
-                    <li>Generation</li>
-                </ul>
-            </div>
-    
-            <div className="control-container">
-                <button className="control-btn" onClick={() => decreaseSpeed()}>-</button>
-                <ul>
-                    <li>{speed}<span> ms</span></li>
-                    <li>Speed</li>
-                </ul>
-                <button className="control-btn" onClick={() => increaseSpeed()}>+</button>
-            </div>
-    
-            <div className="control-container">
-                <button className="control-btn" onClick={() => handleZoom(-0.1)}>-</button>
-                <ul>
-                    <li>{Math.round(zoom * 100)} <span>%</span></li>
-                    <li>Zoom</li>
-                </ul>
-                <button className="control-btn" onClick={() => handleZoom(0.1)}>+</button>
-            </div>
-    
-            <div className="undo-redo-container">
-                {isPlaying ? 
-                    <React.Fragment>
-                        <button className="startBtn" disabled>Undo</button>
-                        <button className="startBtn" disabled>Redo</button>
-                    </React.Fragment>
-                    :
-                    <React.Fragment>
-                        <button className="startBtn" onClick={() => canvasRef.current.handleUndoRedo(Actions.UNDO)}>Undo</button>
-                        <button className="startBtn" onClick={() => canvasRef.current.handleUndoRedo(Actions.REDO)}>Redo</button>
-                    </React.Fragment>
-                }
-            </div>
-    
-            <div className="tool-container">
-                <select onChange={(event) => handleSetTool(event)} className="form-select">
-                    <option value={Tools.Draw}>Draw</option>
-                    <option value={Tools.Move}>Move</option>
-                </select>                
-            </div>
-    
-            <div className="save-container">
-                {isPlaying ? 
-                    <button id="saveBtn" disabled>Save</button>
-                    :
-                    <button id="saveBtn" onClick={saveWorld}>Save</button>
-                }
-            </div>
-        </div>
-    
-        */}
         <div className="p-4 bg-background border rounded-lg shadow-md flex flex-wrap gap-4 items-center">
-      <Button 
-        variant={isPlaying ? "destructive" : "default"}
-        onClick={() => setIsPlaying(!isPlaying)}
-      >
-        {isPlaying ? <Square className="mr-2 h-4 w-4" /> : <Play className="mr-2 h-4 w-4" />}
-        {isPlaying ? "Stop" : "Start"}
-      </Button>
+            <Button 
+                variant={isPlaying ? "destructive" : "default"}
+                onClick={() => setIsPlaying(!isPlaying)}
+            >
+                {isPlaying ? <Square className="mr-2 h-4 w-4" /> : <Play className="mr-2 h-4 w-4" />}
+                {isPlaying ? "Stop" : "Start"}
+            </Button>
 
-      <div className="flex flex-col items-center">
-        <span className="text-2xl font-bold">{generation}</span>
-        <span className="text-sm text-muted-foreground">Generation</span>
-      </div>
+            <div className="flex flex-col items-center">
+                <span className="text-2xl font-bold">{generation}</span>
+                <span className="text-sm text-muted-foreground">Generation</span>
+            </div>
 
-      <div className="flex flex-col items-center">
-        <div className="flex items-center space-x-2">
-          <Button size="icon" variant="outline" onClick={() => handleZoom(-0.1)}>
-            <Minus className="h-4 w-4" />
-          </Button>
-          <span className="w-16 text-center">{Math.round(zoom * 100)}%</span>
-          <Button size="icon" variant="outline" onClick={() => handleZoom(0.1)}>
-            <Plus className="h-4 w-4" />
-          </Button>
-        </div>
-        <span className="text-sm text-muted-foreground">Zoom</span>
-      </div>
+            <div className="flex flex-col items-center">
+                <div className="flex items-center space-x-2">
+                <Button size="icon" variant="outline" onClick={() => handleZoom(-0.1)}>
+                    <Minus className="h-4 w-4" />
+                </Button>
+                <span className="w-16 text-center">{Math.round(zoom * 100)}%</span>
+                <Button size="icon" variant="outline" onClick={() => handleZoom(0.1)}>
+                    <Plus className="h-4 w-4" />
+                </Button>
+                </div>
+                <span className="text-sm text-muted-foreground">Zoom</span>
+            </div>
 
-      <div className="flex flex-col items-center">
-        <div className="flex items-center space-x-2">
-          <Button size="icon" variant="outline" onClick={() => handleSpeed(-100)}>
-            <Minus className="h-4 w-4" />
-          </Button>
-          <span className="w-16 text-center">{speed} ms</span>
-          <Button size="icon" variant="outline" onClick={() => handleSpeed(100)}>
-            <Plus className="h-4 w-4" />
-          </Button>
-        </div>
-        <span className="text-sm text-muted-foreground">Speed</span>
-      </div>
+            <div className="flex flex-col items-center">
+                <div className="flex items-center space-x-2">
+                <Button size="icon" variant="outline" onClick={() => handleSpeed(-100)}>
+                    <Minus className="h-4 w-4" />
+                </Button>
+                <span className="w-16 text-center">{speed} ms</span>
+                <Button size="icon" variant="outline" onClick={() => handleSpeed(100)}>
+                    <Plus className="h-4 w-4" />
+                </Button>
+                </div>
+                <span className="text-sm text-muted-foreground">Speed</span>
+            </div>
 
-      <Select onValueChange={event => handleSetTool(event)}>
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Select tool" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="draw">Draw</SelectItem>
-          <SelectItem value="move">Move</SelectItem>
-        </SelectContent>
-      </Select>
+            <Select onValueChange={event => handleSetTool(event)}>
+                <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select tool" />
+                </SelectTrigger>
+                <SelectContent>
+                <SelectItem value="draw">Draw</SelectItem>
+                <SelectItem value="move">Move</SelectItem>
+                </SelectContent>
+            </Select>
 
-      <div className="flex space-x-2">
-        <Button size="icon" variant="outline" onClick={()=>canvasRef.current.handleUndoRedo(Actions.UNDO)}>
-          <Undo className="h-4 w-4" />
-        </Button>
-        <Button size="icon" variant="outline" onClick={()=>canvasRef.current.handleUndoRedo(Actions.REDO)}>
-          <Redo className="h-4 w-4" />
-        </Button>
-      </div>
+            <div className="flex space-x-2">
+                <Button size="icon" variant="outline" onClick={()=>canvasRef.current.handleUndoRedo(Actions.UNDO)}>
+                <Undo className="h-4 w-4" />
+                </Button>
+                <Button size="icon" variant="outline" onClick={()=>canvasRef.current.handleUndoRedo(Actions.REDO)}>
+                <Redo className="h-4 w-4" />
+                </Button>
+            </div>
 
-      <Button 
-        variant="outline" 
-        onClick={() => setShowGrid(!showGrid)}
-      >
-        <Grid className="mr-2 h-4 w-4" />
-        {showGrid ? "Hide Grid" : "Show Grid"}
-      </Button>
+            <Button 
+                variant="outline" 
+                onClick={() => setShowGrid(!showGrid)}
+            >
+                <Grid className="mr-2 h-4 w-4" />
+                {showGrid ? "Hide Grid" : "Show Grid"}
+            </Button>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline">
-            Actions
-            <ChevronDown className="ml-2 h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuItem onClick={()=>handleMenuAction(MenuAction.SAVE)}>Save</DropdownMenuItem>
-          <DropdownMenuItem onClick = {() => handleMenuAction(MenuAction.EXIT)}>Exit</DropdownMenuItem>
-          <DropdownMenuItem onClick = {() => handleMenuAction(MenuAction.SAVE_EXIT)}>Save and Exit</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                <Button variant="outline">
+                    Actions
+                    <ChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                <DropdownMenuItem onClick={()=>handleMenuAction(MenuAction.SAVE)}>Save</DropdownMenuItem>
+                <DropdownMenuItem onClick = {() => handleMenuAction(MenuAction.EXIT)}>Exit</DropdownMenuItem>
+                <DropdownMenuItem onClick = {() => handleMenuAction(MenuAction.SAVE_EXIT)}>Save and Exit</DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+            </div>
 
     <Canvas2 
             ref={canvasRef}
@@ -265,6 +204,7 @@ const WorldPlayer = (props:viewComponentPropType) => {
             zoom={zoom}
             setZoom={setZoom}
             tool={tool}
+            showGrid = {showGrid}
         />
     </React.Fragment>
     

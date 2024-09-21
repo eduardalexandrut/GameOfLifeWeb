@@ -19,7 +19,8 @@ type propType = {
     historyAction: Actions
     isDrawing: boolean,
     zoom: number,
-    tool: Tools
+    tool: Tools,
+    showGrid: boolean
 }
 const DEF_CELL_WIDTH = 50;
 const DEF_CELL_HEIGHT = 50;
@@ -68,11 +69,9 @@ const Canvas2 = forwardRef<CanvasRef, propType>((props, ref) => {
             contextRef.current.translate(offset.x * props.zoom - scaledOffsetX, offset.y * props.zoom - scaledOffsetY)
             contextRef.current.scale(props.zoom, props.zoom)
             draw(DEF_CELL_WIDTH, props.zoom);
-            //updateWorldGenerations(props.generation);
             contextRef.current.restore();
         }
-       //contextRef.current.clearRect(0,0, world.cells.length * DEF_CELL_WIDTH * props.zoom, world.cells.length * DEF_CELL_WIDTH * props.zoom)
-    }, [props.generation, props.speed, offset, props.zoom, action]);
+    }, [props.generation, props.speed, props.showGrid, offset, props.zoom, action]);
 
     useEffect(() => {
     console.log("evolve")
@@ -85,7 +84,6 @@ const Canvas2 = forwardRef<CanvasRef, propType>((props, ref) => {
     /**Function to draw the cells on the canvas, based on the offset and the zoom. */
   const draw = (size:number, zoom:number) => {
     if(canvasRef.current && contextRef.current) {
-      //contextRef.current.clearRect(0,0,canvasRef.current.width, canvasRef.current.height)
       world.cells.forEach(row=>{
         row.forEach(cell => {
           const drawX = (cell.posX * size) * zoom;
@@ -93,11 +91,12 @@ const Canvas2 = forwardRef<CanvasRef, propType>((props, ref) => {
   
           if (cell.isAlive) {
               contextRef.current.fillStyle = '#D9D9D9';
-              contextRef.current.strokeStyle = '#011930' //'#00072D';
+              contextRef.current.strokeStyle = props.showGrid ? '#011930' : '#D9D9D9' //'#00072D';
           } else {
               contextRef.current.fillStyle = '#011930'//'#00072D';
-              contextRef.current.strokeStyle = '#D9D9D9';
+              contextRef.current.strokeStyle = props.showGrid ? '#D9D9D9' : '#011930';
           }
+
           contextRef.current.strokeRect(drawX, drawY, size * zoom, size * zoom);
           contextRef.current.fillRect(drawX, drawY, size * zoom, size * zoom);
         })
