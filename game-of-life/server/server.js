@@ -99,6 +99,18 @@ app.get('/get-worlds', (req, res) => {
   });
 });
 
+app.delete('/delete-world', (req,res) => {
+  console.log('Received ID:', req.body.id); // Log the received ID
+  const filePath = path.join(__dirname, `../data/${req.body.id}.json`)
+  fs.unlink(filePath, (err) => {
+    if (err) {
+      return res.status(500).send(`Error while deleting the file:${err}`);
+    } 
+    return res.status(200).send("World removed succesfully.")
+
+  })
+})
+
 
 // Start the server
 app.listen(port, () => {

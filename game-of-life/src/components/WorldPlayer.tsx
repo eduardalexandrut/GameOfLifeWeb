@@ -20,6 +20,11 @@ import {
 } from "./ui/dropdown-menu"
 import { viewComponentPropType } from "./WorldBuilder";
 import { View } from "../App";
+import { World } from "../classes/World";
+
+interface worldPlayer extends viewComponentPropType{
+    generation:number
+}
 
 export enum Actions{
     UNDO,
@@ -37,19 +42,19 @@ export enum MenuAction {
     SAVE_EXIT
 }
 
-const WorldPlayer = (props:viewComponentPropType) => {
+const WorldPlayer = (props:worldPlayer) => {
+    const world = useWorldContext();
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
     const [speed, setSpeed] = useState<number>(500);
     const [zoom, setZoom] = useState<number>(1);
-    const [generation, setGeneration] = useState<number>(0);
+    const [generation, setGeneration] = useState<number>(world.generation);
     const [history, setHistory] = useState<Stack<Cell[][]>>(new Stack<Cell[][]>());
     const [historyAction, setHistoryAction] = useState<Actions| null>(null);
     const [tool, setTool] = useState<Tools>(Tools.Draw)
     const [showGrid, setShowGrid] = useState<boolean>(true);
     const canvasRef = useRef(null);
-    const world = useWorldContext();
-    const {updateWorldGenerations} = useSetWorldContext();
+    const updateWorld = useSetWorldContext();
 
     const handleSpeed = (value:number) => {
         const newSpeed = Math.min(Math.max(speed + value, 100), 3000)
@@ -84,7 +89,11 @@ const WorldPlayer = (props:viewComponentPropType) => {
         setTool(selectedTool);
     };
 
+
     const saveWorld = async () => {
+       /**Code to update generation and lastUpdated */
+        const newWorld = new World(world.id, world.columns, world.rows, world.name, world.created, world.cells,new Date() ,generation, "");
+        updateWorld(newWorld);
         let worldJSON = world.toJsonObject();
         worldJSON.generations = generation;
         const jsonData = JSON.stringify(worldJSON);
@@ -106,6 +115,7 @@ const WorldPlayer = (props:viewComponentPropType) => {
             console.error('Error:', error);
           }
         };
+        
 
     return (
         <React.Fragment>

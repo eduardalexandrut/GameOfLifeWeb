@@ -40,8 +40,9 @@ const WorldBuilder = (props:viewComponentPropType) => {
 
 
     const handleCreate = () => {
-        const id = uuidv4()
-        const newWorld = new World(id,width, height, name, null);
+        const id = uuidv4();
+        const today = new Date();
+        const newWorld = new World(id,width, height, name, today, null, today, 0, "");
         //world = newWorld
         updateWorld(newWorld);
         props.setView(View.Player);

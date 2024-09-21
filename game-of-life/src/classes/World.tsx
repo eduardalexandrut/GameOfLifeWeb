@@ -7,6 +7,10 @@ interface WorldInterface {
     rows: number,
     name: string,
     cells: Cell[][],
+    created: Date,
+    lastUpdate:Date,
+    generation:number,
+    image:string
     evolve(offsetX:number, offsetY:number): void,
     //setContext(ctx:CanvasRenderingContext2D): void
 }
@@ -26,17 +30,25 @@ export class World implements WorldInterface{
     #rows: number;
     #name: string;
     #cells: Cell[][];
+    #created: Date;
     #undoStack: Stack<Cell[][]>;
-    #redoStack: Stack<Cell[][]>
+    #redoStack: Stack<Cell[][]>;
+    lastUpdate:Date;
+    generation:number;
+    image:string;
 
-    constructor(id:number, columns: number, rows: number, name: string, cells: Cell[][]) {
+    constructor(id:number, columns: number, rows: number, name: string, created:Date,cells: Cell[][], lastUpdate:Date, generation:number, image:string) {
       this.#id = id;
       this.#columns = columns;
       this.#rows = rows;
       this.#name = name;
       this.#cells = cells ? cells : this.#initialize_random();
-      this.#undoStack = new Stack<Cell[][]>
-      this.#redoStack = new Stack<Cell[][]>
+      this.#created = created;
+      this.#undoStack = new Stack<Cell[][]>;
+      this.#redoStack = new Stack<Cell[][]>;
+      this.lastUpdate = lastUpdate;
+      this.generation = generation;
+      this.image = image;
       }
 
       
@@ -71,6 +83,10 @@ export class World implements WorldInterface{
 
       get columns(): number {
         return this.#columns;
+      }
+
+      get created(): Date {
+        return this.#created;
       }
     
       set columns(value: number) {
@@ -182,12 +198,7 @@ export class World implements WorldInterface{
       })
       return world;
     }
-
-    static convertFromJSON(json:any): World {
-      const world = new World(json.id, json.name, json.columns, json.rows, json.cells);
-      return world;
-    }
-
+    
     // Method to convert the World instance to a JSON object
     toJsonObject() {
       return {
@@ -196,6 +207,8 @@ export class World implements WorldInterface{
         columns: this.#columns,
         rows: this.#rows,
         name: this.#name,
+        created: this.#created,
+        lastUpdate: new Date(),
         cells:this.#cells.map((row)=> row.map((cell)=>cell.convertToJSON()))
       };
   }

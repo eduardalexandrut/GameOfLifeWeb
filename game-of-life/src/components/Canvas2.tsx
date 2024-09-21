@@ -83,6 +83,7 @@ const Canvas2 = forwardRef<CanvasRef, propType>((props, ref) => {
 
     /**Function to draw the cells on the canvas, based on the offset and the zoom. */
   const draw = (size:number, zoom:number) => {
+    console.log(world.name, world.cells)
     if(canvasRef.current && contextRef.current) {
       world.cells.forEach(row=>{
         row.forEach(cell => {

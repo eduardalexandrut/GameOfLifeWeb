@@ -33,11 +33,12 @@ export const useSetWorldContext = () => useContext(UpdateWorldContext);
 
 // Define the context provider
 export const WorldProvider = ({ children }: { children: ReactNode }) => {
-    const [world, setWorld] = useState<World | null>(new World(-1,-1,-1,"Unamed World", []));
+    const [world, setWorld] = useState<World | null>(null);
 
-    const updateWorld = (world:World) => {
+    const updateWorld = (world:World, callback?:()=> void) => {
         setWorld(world);
     }
+
     
     return (
         <WorldContext.Provider value={world}>

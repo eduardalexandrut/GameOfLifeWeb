@@ -42,12 +42,16 @@ function App() {
         <WorldPlayer
           view={view}
           setView={setView}
+          generation={0}
         />
         )
         break;
         case View.Selector:
           content = (
-        <WorldSelector/>
+        <WorldSelector
+          view={view}
+          setView={setView}
+        />
       )
       break;
     default:
