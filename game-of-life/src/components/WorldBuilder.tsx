@@ -44,210 +44,142 @@ const WorldBuilder = (props:viewComponentPropType) => {
 
 
     const handleCreate = () => {
-        if (widthRef.current && heightRef.current && nameRef.current) {
-            /*const columns = parseInt(widthRef.current.value);
-            const rows = parseInt(heightRef.current.value);
-            const name = nameRef.current.value.length > 0 ? nameRef.current.value: "Unamed World";*/
-        }
-        const columns = width;
-        const rows = height
         const id = uuidv4()
-        const newWorld = new World(id,columns, rows, name, null);
+        const newWorld = new World(id,width, height, name, null);
         //world = newWorld
         updateWorld(newWorld);
         props.setView(View.Player);
     }
 
-    const handleWidthChange = (e:React.ChangeEvent<HTMLInputElement>) => {
-        setWidth(Number(e.target.value))
-    }
-
-    const handleHeightChange = (e:React.ChangeEvent<HTMLInputElement>) => {
-        setHeight(Number(e.target.value))
-    }
-    
     return (
-        
         <React.Fragment>
-        {/*<div className="mt-5 mb-5">
-            <h1>New world</h1>
-        </div>
-        <Button variant="destructive">Click</Button>
-        <div className="form-container">
-            <div className="form-column">
-                <form id="builder-form" className="d-flex flex-column gap-5">
-                    <div className="form-group">
-                        <input
-                            className="input"
-                            ref={nameRef}
-                            type="text"
-                            name="name"
-                            placeholder="World name"
-                            autoComplete="off"
-                            required
-                        />
+          <div className="min-h-screen bg-gray-100 text-gray-900 py-8">
+        <Card className="w-full max-w-6xl mx-auto bg-white shadow-lg">
+          <CardHeader>
+            <CardTitle className="text-3xl text-gray-800">Game of Life Setup</CardTitle>
+            <CardDescription className="text-lg text-gray-600">Configure your Game of Life world</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleCreate} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="worldName" className="text-lg text-gray-700">World Name</Label>
+                    <Input
+                      id="worldName"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                      className="text-lg bg-gray-50 border-gray-300 text-gray-900"
+                    />
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="width" className="text-lg text-gray-700">Width ({width})</Label>
+                      <Slider
+                        id="width"
+                        min={10}
+                        max={100}
+                        step={1}
+                        value={[width]}
+                        onValueChange={(value) => setWidth(value[0])}
+                        className="[&_[role=slider]]:bg-blue-600"
+                      />
                     </div>
-                    <div className="form-group">
-                        <label>Width: {width}</label>
-                        <input
-                            type="range"
-                            ref={widthRef}
-                            min={10}
-                            max={150}
-                            value={width}
-                            onChange={e => handleWidthChange(e)}
-                        />
+                    <div className="space-y-2">
+                      <Label htmlFor="height" className="text-lg text-gray-700">Height ({height})</Label>
+                      <Slider
+                        id="height"
+                        min={10}
+                        max={100}
+                        step={1}
+                        value={[height]}
+                        onValueChange={(value) => setHeight(value[0])}
+                        className="[&_[role=slider]]:bg-blue-600"
+                      />
                     </div>
-                    <div className="form-group">
-                        <label>Height: {height}</label>
-                        <input
-                            type="range"
-                            ref={heightRef}
-                            min={10}
-                            max={150}
-                            value={height}
-                            onChange={e => handleHeightChange(e)}
-                        />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-lg text-gray-700">Initial State</Label>
+                    <RadioGroup value={initialState} onValueChange={setInitialState} className="flex space-x-4">
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="default" id="default" className="border-gray-400 text-blue-600" />
+                        <Label htmlFor="default" className="text-base text-gray-600">Default</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="random" id="random" className="border-gray-400 text-blue-600" />
+                        <Label htmlFor="random" className="text-base text-gray-600">Random</Label>
+                      </div>
+                    </RadioGroup>
+                  </div>
+
+                  {initialState === 'random' && (
+                    <div className="space-y-2">
+                      <Label htmlFor="alivePercentage" className="text-lg text-gray-700">Percentage of Alive Cells ({alivePercentage}%)</Label>
+                      <Slider
+                        id="alivePercentage"
+                        min={1}
+                        max={100}
+                        step={1}
+                        value={[alivePercentage]}
+                        onValueChange={(value) => setAlivePercentage(value[0])}
+                        className="[&_[role=slider]]:bg-blue-600"
+                      />
                     </div>
-                </form>
-               
-                
-            </div>
-        </div>
-        <div className="button-container">
-            <button onClick={() => handleCreate()}>Create</button>
-            <button onClick={e => props.setView(View.Menu)}>Discard</button>
-        </div>*/}
-        <div className="min-h-screen bg-gray-100 text-gray-900 py-8">
-      <Card className="w-full max-w-6xl mx-auto bg-white shadow-lg">
-        <CardHeader>
-          <CardTitle className="text-3xl text-gray-800">Game of Life Setup</CardTitle>
-          <CardDescription className="text-lg text-gray-600">Configure your Game of Life world</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleCreate} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-6">
+                  )}
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="aliveColor" className="text-lg text-gray-700">Alive Cell Color</Label>
+                      <div className="flex items-center space-x-2">
+                        <Input
+                          id="aliveColor"
+                          type="color"
+                          value={aliveColor}
+                          onChange={(e) => setAliveColor(e.target.value)}
+                          className="w-16 h-16 bg-white border-gray-300"
+                        />
+                        <span className="text-lg text-gray-600">{aliveColor}</span>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="deadColor" className="text-lg text-gray-700">Dead Cell Color</Label>
+                      <div className="flex items-center space-x-2">
+                        <Input
+                          id="deadColor"
+                          type="color"
+                          value={deadColor}
+                          onChange={(e) => setDeadColor(e.target.value)}
+                          className="w-16 h-16 bg-white border-gray-300"
+                        />
+                        <span className="text-lg text-gray-600">{deadColor}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="space-y-2">
-                  <Label htmlFor="worldName" className="text-lg text-gray-700">World Name</Label>
-                  <Input
-                    id="worldName"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                    className="text-lg bg-gray-50 border-gray-300 text-gray-900"
+                  <Label htmlFor="rules" className="text-lg text-gray-700">Game Rules</Label>
+                  <Textarea
+                    id="rules"
+                    value={rules}
+                    onChange={(e) => setRules(e.target.value)}
+                    rows={12}
+                    className="text-base h-full resize-none bg-gray-50 border-gray-300 text-gray-900"
                   />
                 </div>
-
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="width" className="text-lg text-gray-700">Width ({width})</Label>
-                    <Slider
-                      id="width"
-                      min={10}
-                      max={100}
-                      step={1}
-                      value={[width]}
-                      onValueChange={(value) => setWidth(value[0])}
-                      className="[&_[role=slider]]:bg-blue-600"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="height" className="text-lg text-gray-700">Height ({height})</Label>
-                    <Slider
-                      id="height"
-                      min={10}
-                      max={100}
-                      step={1}
-                      value={[height]}
-                      onValueChange={(value) => setHeight(value[0])}
-                      className="[&_[role=slider]]:bg-blue-600"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-lg text-gray-700">Initial State</Label>
-                  <RadioGroup value={initialState} onValueChange={setInitialState} className="flex space-x-4">
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="default" id="default" className="border-gray-400 text-blue-600" />
-                      <Label htmlFor="default" className="text-base text-gray-600">Default</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="random" id="random" className="border-gray-400 text-blue-600" />
-                      <Label htmlFor="random" className="text-base text-gray-600">Random</Label>
-                    </div>
-                  </RadioGroup>
-                </div>
-
-                {initialState === 'random' && (
-                  <div className="space-y-2">
-                    <Label htmlFor="alivePercentage" className="text-lg text-gray-700">Percentage of Alive Cells ({alivePercentage}%)</Label>
-                    <Slider
-                      id="alivePercentage"
-                      min={1}
-                      max={100}
-                      step={1}
-                      value={[alivePercentage]}
-                      onValueChange={(value) => setAlivePercentage(value[0])}
-                      className="[&_[role=slider]]:bg-blue-600"
-                    />
-                  </div>
-                )}
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="aliveColor" className="text-lg text-gray-700">Alive Cell Color</Label>
-                    <div className="flex items-center space-x-2">
-                      <Input
-                        id="aliveColor"
-                        type="color"
-                        value={aliveColor}
-                        onChange={(e) => setAliveColor(e.target.value)}
-                        className="w-16 h-16 bg-white border-gray-300"
-                      />
-                      <span className="text-lg text-gray-600">{aliveColor}</span>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="deadColor" className="text-lg text-gray-700">Dead Cell Color</Label>
-                    <div className="flex items-center space-x-2">
-                      <Input
-                        id="deadColor"
-                        type="color"
-                        value={deadColor}
-                        onChange={(e) => setDeadColor(e.target.value)}
-                        className="w-16 h-16 bg-white border-gray-300"
-                      />
-                      <span className="text-lg text-gray-600">{deadColor}</span>
-                    </div>
-                  </div>
-                </div>
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="rules" className="text-lg text-gray-700">Game Rules</Label>
-                <Textarea
-                  id="rules"
-                  value={rules}
-                  onChange={(e) => setRules(e.target.value)}
-                  rows={12}
-                  className="text-base h-full resize-none bg-gray-50 border-gray-300 text-gray-900"
-                />
-              </div>
-            </div>
-          </form>
-        </CardContent>
-        <CardFooter className="flex justify-end">
-          <Button type="submit" onClick={()=>handleCreate()} size="lg" className="text-lg bg-blue-600 hover:bg-blue-700 text-white">Create</Button>
-          <Button type="submit" onClick={(e) => props.setView(View.Menu)} size="lg" className="text-lg bg-blue-600 hover:bg-blue-700 text-white">Discard</Button>
-        </CardFooter>
-      </Card>
-    </div>
+            </form>
+          </CardContent>
+          <CardFooter className="flex justify-end">
+            <Button type="submit" onClick={()=>handleCreate()} size="lg" className="text-lg bg-blue-600 hover:bg-blue-700 text-white">Create</Button>
+            <Button type="submit" onClick={(e) => props.setView(View.Menu)} size="lg" className="text-lg bg-blue-600 hover:bg-blue-700 text-white">Discard</Button>
+          </CardFooter>
+        </Card>
+      </div>
     </React.Fragment>
-    
-            
-   
     )
 }
 export default WorldBuilder;
