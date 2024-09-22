@@ -21,7 +21,6 @@ export const Context = createContext(null);
 
 function App() {
   const [view, setView] = useState<View>(View.Menu);
-  const [world, setWorld] = useState<World | null>(null);
 
   // Rendering based on the value of `view` using switch statement
   let content;
@@ -60,7 +59,7 @@ function App() {
 
   return (
     <WorldProvider>
-      <div className="App container-fluid m-0 ">
+      <div className="App">
         {content}
       </div>
     </WorldProvider>

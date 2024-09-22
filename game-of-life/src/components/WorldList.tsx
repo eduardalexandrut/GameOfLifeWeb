@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { World } from '../classes/World'
 import { Card, CardContent } from "./ui/card"
 import { Button } from './ui/Button';
-import { useSetWorldContext } from './WorldContext';
+import { useSetWorldContext, useWorldContext } from './WorldContext';
 import { viewComponentPropType } from './WorldBuilder';
 import { View } from '../App';
 import { Cell } from '../classes/Cell';
@@ -13,6 +13,7 @@ export default function WorldSelector(props:viewComponentPropType) {
 
   const [worlds, setWorlds] = useState<Array<any>>([]);
   const updateWorld = useSetWorldContext();
+  const worldRef = useWorldContext();
 
   useEffect(() => {
     fetch('http://localhost:5000/get-worlds')
@@ -51,6 +52,7 @@ export default function WorldSelector(props:viewComponentPropType) {
       ))
     const newWorld = new World(world.id, world.columns, world.rows, world.name, world.created, cells, world.lastUpdate, world.generation, world.image);
     updateWorld(newWorld);
+    console.log(worldRef.generation);
     props.setView(View.Player);
   }
 

@@ -203,7 +203,7 @@ export class World implements WorldInterface{
     toJsonObject() {
       return {
         id: this.#id,
-        generations:0,
+        generations:this.generation,
         columns: this.#columns,
         rows: this.#rows,
         name: this.#name,

@@ -100,7 +100,6 @@ app.get('/get-worlds', (req, res) => {
 });
 
 app.delete('/delete-world', (req,res) => {
-  console.log('Received ID:', req.body.id); // Log the received ID
   const filePath = path.join(__dirname, `../data/${req.body.id}.json`)
   fs.unlink(filePath, (err) => {
     if (err) {

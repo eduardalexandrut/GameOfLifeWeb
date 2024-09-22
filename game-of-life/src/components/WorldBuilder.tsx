@@ -1,6 +1,6 @@
 import { useContext, useRef, useState } from "react"
 import { Context, View } from "../App"
-import { useSetWorldContext, useWorldContext, WorldContext } from "./WorldContext"
+import { useSetWorldContext,} from "./WorldContext"
 import { World } from "../classes/World"
 import React from "react";
 import {v4 as uuidv4} from 'uuid';

@@ -2,12 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import Canvas from "./Canvas";
 import Stack from "../classes/Stack";
 import { Cell } from "../classes/Cell";
-import UndoIcon from '@mui/icons-material/Undo';
-import RedoIcon from '@mui/icons-material/Redo';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import PauseIcon from '@mui/icons-material/Pause';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { useSetWorldContext, useWorldContext } from "./WorldContext";
+import { useSetWorldContext,} from "./WorldContext"
+import { useWorldContext } from "./WorldContext";
 import Canvas2 from "./Canvas2";
 import { Button } from "./ui/Button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
@@ -54,6 +50,7 @@ const WorldPlayer = (props:worldPlayer) => {
     const [tool, setTool] = useState<Tools>(Tools.Draw)
     const [showGrid, setShowGrid] = useState<boolean>(true);
     const canvasRef = useRef(null);
+    const hasMounted = useRef<boolean>(false);
     const updateWorld = useSetWorldContext();
 
     const handleSpeed = (value:number) => {
@@ -90,32 +87,37 @@ const WorldPlayer = (props:worldPlayer) => {
     };
 
 
-    const saveWorld = async () => {
-       /**Code to update generation and lastUpdated */
-        const newWorld = new World(world.id, world.columns, world.rows, world.name, world.created, world.cells,new Date() ,generation, "");
-        updateWorld(newWorld);
-        let worldJSON = world.toJsonObject();
-        worldJSON.generations = generation;
+    const saveToServer = async (newWorld:World) => {
+        console.log("Started saving world")
+        const worldJSON = newWorld.toJsonObject();  // Assuming toJsonObject exists in your World class
         const jsonData = JSON.stringify(worldJSON);
+  
         try {
-            const response = await fetch('http://localhost:5000/add-world', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: jsonData,
-            });
-        
-            if (response.ok) {
-              console.log('File uploaded successfully');
-            } else {
-              console.error('Error uploading file');
-            }
-          } catch (error) {
-            console.error('Error:', error);
+          const response = await fetch('http://localhost:5000/add-world', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: jsonData,
+          });
+  
+          if (response.ok) {
+            console.log('World uploaded successfully');
+          } else {
+            console.error('Error uploading world');
           }
-        };
-        
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      };
+
+    const saveWorld = () => {
+        const newWorld = new World(world.id, world.columns, world.rows, world.name,world.created, world.cells, new Date(), generation, "");
+        world.lastUpdate = new Date();
+        world.generation = generation;
+        //updateWorld(newWorld);
+        saveToServer(world);
+    };
 
     return (
         <React.Fragment>
@@ -186,7 +188,7 @@ const WorldPlayer = (props:worldPlayer) => {
                 {showGrid ? "Hide Grid" : "Show Grid"}
             </Button>
 
-            <DropdownMenu>
+            <DropdownMenu onOpenChange={()=>{console.log("drop");hasMounted.current = true}}>
                 <DropdownMenuTrigger asChild>
                 <Button variant="outline">
                     Actions
