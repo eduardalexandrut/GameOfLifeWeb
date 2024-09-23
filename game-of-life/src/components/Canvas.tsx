@@ -33,9 +33,8 @@ const Canvas = (props:propType) => {
 
     //Function that evolves the map based on conway's rules.
     const evolve = () => {
-        world.evolve();
-        world.setContext(contextRef.current);
-        world.draw();
+        const prev:Cell[][] = world.cells;
+        console.log(world.evolve() == prev);
         //Increase the generation count.
         props.setGeneration((prevG) => prevG + 1);
     };
