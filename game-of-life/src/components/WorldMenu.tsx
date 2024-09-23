@@ -28,7 +28,7 @@ export default function WorldMenu(props:propType) {
         <div id='menu'>
             <button onClick={()=>handleView(View.Builder)} className='text-red'>New World</button>
             <button onClick = {()=>handleView(View.Selector)}>My Worlds</button>
-            <button>Upload world</button>
+            <button>Game of Life</button>
         </div>
 
     </div>

@@ -18,10 +18,6 @@ import { viewComponentPropType } from "./WorldBuilder";
 import { View } from "../App";
 import { World } from "../classes/World";
 
-interface worldPlayer extends viewComponentPropType{
-    generation:number
-}
-
 export enum Actions{
     UNDO,
     REDO
@@ -38,7 +34,7 @@ export enum MenuAction {
     SAVE_EXIT
 }
 
-const WorldPlayer = (props:worldPlayer) => {
+const WorldPlayer = (props:viewComponentPropType) => {
     const world = useWorldContext();
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
@@ -87,9 +83,31 @@ const WorldPlayer = (props:worldPlayer) => {
         setTool(selectedTool);
     };
 
+    const saveImageToServer = async () => {
+        canvasRef.current.canvas.toBlob(async (blob) =>{
+            const formData = new FormData();
+            formData.append('image', blob, `${world.image}`);
 
-    const saveToServer = async (newWorld:World) => {
-        console.log("Started saving world")
+            try {
+                const response = await fetch('http://localhost:5000/upload-world-image', {
+                    method:'POST',
+                    body: formData
+                })
+
+                if (response.ok) {
+                    console.log("World image uploaded correctly.")
+                } else {
+                    console.error("Couldn't upload image")
+                }
+
+            } catch(error) {
+                console.error('Error while uploading image file:', error);
+            }
+        })
+    }
+
+
+    const saveWorldToServer = async (newWorld:World) => {
         const worldJSON = newWorld.toJsonObject();  // Assuming toJsonObject exists in your World class
         const jsonData = JSON.stringify(worldJSON);
   
@@ -113,11 +131,9 @@ const WorldPlayer = (props:worldPlayer) => {
       };
 
     const saveWorld = () => {
-        const newWorld = new World(world.id, world.columns, world.rows, world.name,world.created, world.cells, new Date(), generation, "");
-       // world.lastUpdate = new Date();
-        //world.generations = generation;
-        updateWorld(newWorld);
-        saveToServer(world);
+        updateWorld({lastUpdate: new Date(), generations: generation});
+        saveWorldToServer(world);
+        saveImageToServer();
     };
 
     return (

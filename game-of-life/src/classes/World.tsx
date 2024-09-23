@@ -211,7 +211,6 @@ export class World implements WorldInterface{
           if (lastState) {
             this.#cells = lastState
           }
-          console.log(`redo ${this.#redoStack.size()}`)
       }
     }
 
@@ -240,7 +239,9 @@ export class World implements WorldInterface{
         name: this.#name,
         created: this.#created,
         lastUpdate: new Date(),
-        cells:this.#cells.map((row)=> row.map((cell)=>cell.convertToJSON()))
+        image: this.#image,
+        cells:this.#cells.map((row)=> row.map((cell)=>cell.convertToJSON())),
+        //history:this.undoStack
       };
   }
 

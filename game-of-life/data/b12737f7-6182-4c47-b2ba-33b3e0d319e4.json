@@ -1,17 +1,18 @@
 {
-  "id": "9bb92c17-638d-4d97-87a2-bd05d08dfcc5",
+  "id": "b12737f7-6182-4c47-b2ba-33b3e0d319e4",
   "generations": 0,
   "columns": 10,
   "rows": 10,
-  "name": "mic",
-  "created": "2024-09-23T11:47:55.677Z",
-  "lastUpdate": "2024-09-23T11:48:28.672Z",
+  "name": "New World",
+  "created": "2024-09-23T14:12:51.521Z",
+  "lastUpdate": "2024-09-23T14:15:26.089Z",
+  "image": "./images/b12737f7-6182-4c47-b2ba-33b3e0d319e4.png",
   "cells": [
     [
-      "{\"posX\":0,\"posY\":0,\"isAlive\":true}",
-      "{\"posX\":1,\"posY\":0,\"isAlive\":true}",
-      "{\"posX\":2,\"posY\":0,\"isAlive\":true}",
-      "{\"posX\":3,\"posY\":0,\"isAlive\":true}",
+      "{\"posX\":0,\"posY\":0,\"isAlive\":false}",
+      "{\"posX\":1,\"posY\":0,\"isAlive\":false}",
+      "{\"posX\":2,\"posY\":0,\"isAlive\":false}",
+      "{\"posX\":3,\"posY\":0,\"isAlive\":false}",
       "{\"posX\":4,\"posY\":0,\"isAlive\":false}",
       "{\"posX\":5,\"posY\":0,\"isAlive\":false}",
       "{\"posX\":6,\"posY\":0,\"isAlive\":false}",
@@ -21,8 +22,8 @@
     ],
     [
       "{\"posX\":0,\"posY\":1,\"isAlive\":false}",
-      "{\"posX\":1,\"posY\":1,\"isAlive\":true}",
-      "{\"posX\":2,\"posY\":1,\"isAlive\":true}",
+      "{\"posX\":1,\"posY\":1,\"isAlive\":false}",
+      "{\"posX\":2,\"posY\":1,\"isAlive\":false}",
       "{\"posX\":3,\"posY\":1,\"isAlive\":false}",
       "{\"posX\":4,\"posY\":1,\"isAlive\":false}",
       "{\"posX\":5,\"posY\":1,\"isAlive\":false}",
@@ -76,8 +77,8 @@
       "{\"posX\":5,\"posY\":5,\"isAlive\":false}",
       "{\"posX\":6,\"posY\":5,\"isAlive\":false}",
       "{\"posX\":7,\"posY\":5,\"isAlive\":false}",
-      "{\"posX\":8,\"posY\":5,\"isAlive\":true}",
-      "{\"posX\":9,\"posY\":5,\"isAlive\":true}"
+      "{\"posX\":8,\"posY\":5,\"isAlive\":false}",
+      "{\"posX\":9,\"posY\":5,\"isAlive\":false}"
     ],
     [
       "{\"posX\":0,\"posY\":6,\"isAlive\":false}",
@@ -88,8 +89,8 @@
       "{\"posX\":5,\"posY\":6,\"isAlive\":false}",
       "{\"posX\":6,\"posY\":6,\"isAlive\":false}",
       "{\"posX\":7,\"posY\":6,\"isAlive\":false}",
-      "{\"posX\":8,\"posY\":6,\"isAlive\":true}",
-      "{\"posX\":9,\"posY\":6,\"isAlive\":true}"
+      "{\"posX\":8,\"posY\":6,\"isAlive\":false}",
+      "{\"posX\":9,\"posY\":6,\"isAlive\":false}"
     ],
     [
       "{\"posX\":0,\"posY\":7,\"isAlive\":false}",

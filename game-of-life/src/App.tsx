@@ -28,6 +28,7 @@ function App() {
     case View.Menu:
       content = <WorldMenu view={view} setView={setView}/>;
       break;
+
     case View.Builder:
       content = (
         <WorldBuilder
@@ -36,23 +37,19 @@ function App() {
         />
       );
       break;
+
     case View.Player:
       content = (
         <WorldPlayer
           view={view}
           setView={setView}
-          generation={0}
         />
         )
         break;
-        case View.Selector:
-          content = (
-        <WorldSelector
-          view={view}
-          setView={setView}
-        />
-      )
+    
+    case View.Selector: content = (<WorldSelector view={view} setView={setView}/>)
       break;
+
     default:
       content = null;
   }

@@ -42,8 +42,8 @@ const WorldBuilder = (props:viewComponentPropType) => {
     const handleCreate = () => {
         const id = uuidv4();
         const today = new Date();
-        const newWorld = new World(id,width, height, name, today, null, today, 0, "");
-        //world = newWorld
+        const worldImage = `./images/${id}.png`;
+        const newWorld = new World(id,width, height, name, today, null, today, 0, worldImage);
         updateWorld(newWorld);
         props.setView(View.Player);
     }

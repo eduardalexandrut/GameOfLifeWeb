@@ -8,12 +8,10 @@ import { View } from '../App';
 import { Cell } from '../classes/Cell';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
 
-
 export default function WorldSelector(props:viewComponentPropType) {
 
   const [worlds, setWorlds] = useState<Array<any>>([]);
   const updateWorld = useSetWorldContext();
-  const worldRef = useWorldContext();
 
   useEffect(() => {
     fetch('http://localhost:5000/get-worlds')
@@ -84,13 +82,13 @@ export default function WorldSelector(props:viewComponentPropType) {
               <div className="flex flex-col sm:flex-row">
                 {/**World image */}
                 <div className="w-full sm:w-1/3">
-                  {/*<Image
+                  <img 
                     src={world.image}
                     alt={world.name}
                     width={200}
                     height={200}
                     className="w-full h-full object-cover"
-                  />*/}
+                  />
                 </div>
                 {/** World info Section */}
                 <div className="w-full sm:w-2/3 p-4">

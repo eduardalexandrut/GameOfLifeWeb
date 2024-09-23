@@ -38,7 +38,7 @@ const Canvas2 = forwardRef<CanvasRef, propType>((props, ref) => {
     const [offset, setOffset] = useState({x:width/3,y:height/4});
     const [dragStart, setDragStart] = useState({x:0,y:0});
     const [isDragging, setIsDragging] = useState<boolean>(false);
-    const[action, setAction] = useState(0);
+    const [action, setAction] = useState(0);
     const {updateWorldGenerations} = useSetWorldContext();
 
     /**I use this hook in order to call handleUndoRedo() function from parent component WorldPlayer. */
@@ -46,6 +46,12 @@ const Canvas2 = forwardRef<CanvasRef, propType>((props, ref) => {
         handleUndoRedo(action: Actions) {
           handleUndoRedo(action);
         },
+        get canvas() {
+          return canvasRef.current;
+        },
+        get context() {
+          return contextRef.current;
+        }
     }));
 
 

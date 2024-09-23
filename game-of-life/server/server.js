@@ -4,6 +4,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { json } = require('stream/consumers');
+const multer = require('multer');
 const app = express();
 const port = 5000;
 
@@ -12,6 +13,18 @@ app.use(bodyParser.json());
 app.use(bodyParser.json({ limit: '100mb' })); // For JSON payloads
 // Enable CORS for all origins
 app.use(cors());
+
+//Set multer for file storage.
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './public/images/'); //Dir to save the file.
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname); //Save file with its original name.
+  }
+})
+
+const upload = multer({ storage: storage });
 
 app.post('/add-world', (req, res) => {
   const filePath = path.join(__dirname, `../data/${req.body.id}.json`);
@@ -57,6 +70,14 @@ app.post('/add-world', (req, res) => {
     }
   });
 });
+
+//Endpoint to upload a world's image.
+app.post('/upload-world-image', upload.single('image'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).send("No image file uploaded.")
+  }
+  return res.status(200).send("Image saved succesfully");
+})
 
 
 app.get('/get-worlds', (req, res) => {
