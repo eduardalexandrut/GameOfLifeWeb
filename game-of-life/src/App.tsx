@@ -6,8 +6,9 @@ import WorldBuilder from './components/WorldBuilder';
 import WorldPlayer from './components/WorldPlayer';
 import { WorldProvider } from './components/WorldContext';
 import { World } from './classes/World';
-import WorldSelector from './components/WorldSelector';
+import WorldSelector from './components/WorldList';
 import WorldMenu from './components/WorldMenu';
+
 
 export enum View {
   Menu,
@@ -20,7 +21,6 @@ export const Context = createContext(null);
 
 function App() {
   const [view, setView] = useState<View>(View.Menu);
-  const [world, setWorld] = useState<World | null>(null);
 
   // Rendering based on the value of `view` using switch statement
   let content;
@@ -38,12 +38,19 @@ function App() {
       break;
     case View.Player:
       content = (
-        <WorldPlayer/>
+        <WorldPlayer
+          view={view}
+          setView={setView}
+          generation={0}
+        />
         )
         break;
         case View.Selector:
           content = (
-        <WorldSelector/>
+        <WorldSelector
+          view={view}
+          setView={setView}
+        />
       )
       break;
     default:
@@ -51,11 +58,11 @@ function App() {
   }
 
   return (
-    <Context.Provider value={[world, setWorld]}>
+    <WorldProvider>
       <div className="App">
         {content}
       </div>
-    </Context.Provider>
+    </WorldProvider>
   );
 }
 

@@ -1,16 +1,21 @@
 import { Cell } from "./Cell";
+import Stack from "./Stack";
 
 interface WorldInterface {
+    id:number,
     columns: number,
     rows: number,
     name: string,
     cells: Cell[][],
-    draw(): void,
-    evolve(): Cell[][],
-    setContext(ctx:CanvasRenderingContext2D): void
+    created: Date,
+    lastUpdate:Date,
+    generation:number,
+    image:string
+    evolve(offsetX:number, offsetY:number): void,
+    //setContext(ctx:CanvasRenderingContext2D): void
 }
-const CELL_columns = 50;
-const CELL_rows = 50;
+const CELL_COLUMNS = 50;
+const CELL_ROWS = 50;
 // Define relative positions of neighbors.
 const relativePositions = [
   [-1, -1], [-1, 0], [-1, 1],
@@ -20,17 +25,32 @@ const relativePositions = [
 
 
 export class World implements WorldInterface{
+    #id: number;
     #columns: number;
     #rows: number;
     #name: string;
     #cells: Cell[][];
+    #created: Date;
+    #undoStack: Stack<Cell[][]>;
+    #redoStack: Stack<Cell[][]>;
+    lastUpdate:Date;
+    generation:number;
+    image:string;
 
-    constructor(columns: number, rows: number, name: string) {
-        this.#columns = columns;
-        this.#rows = rows;
-        this.#name = name;
-        this.#cells = this.#initialize_random();
+    constructor(id:number, columns: number, rows: number, name: string, created:Date,cells: Cell[][], lastUpdate:Date, generation:number, image:string) {
+      this.#id = id;
+      this.#columns = columns;
+      this.#rows = rows;
+      this.#name = name;
+      this.#cells = cells ? cells : this.#initialize_random();
+      this.#created = created;
+      this.#undoStack = new Stack<Cell[][]>;
+      this.#redoStack = new Stack<Cell[][]>;
+      this.lastUpdate = lastUpdate;
+      this.generation = generation;
+      this.image = image;
       }
+
       
       #initialize_random(): Cell[][] {
          //Create the 2d matrix of cells.
@@ -42,22 +62,31 @@ export class World implements WorldInterface{
              const row: Cell[] = [];
              for (let j = 0; j < this.rows; j++) {
                  // Generate a random boolean to determine if the cell is alive or dead
-                 const isAlive = Math.random() > 0.8; // Adjust the probability threshold as needed
-                 const cell: Cell = new Cell(CELL_columns, CELL_rows, x, y, isAlive);
+                 const isAlive = Math.random() > 0.4; // Adjust the probability threshold as needed
+                 const cell: Cell = new Cell( x, y, isAlive);
                  //cell.draw();
                  row.push(cell);
-                 x += this.columns;
+                 x += 1;
              }
              newCells.push(row);
-             y += this.rows;
+             y += 1;
              x = 0;
          }
+         console.log(newCells)
          return newCells;
       }
     
       // Define getters and setters
+      get id(): number {
+        return this.#id;
+      }
+
       get columns(): number {
         return this.#columns;
+      }
+
+      get created(): Date {
+        return this.#created;
       }
     
       set columns(value: number) {
@@ -88,11 +117,17 @@ export class World implements WorldInterface{
         this.#cells = value;
       }
 
-      draw(): void {
-          this.#cells.forEach((row) => row.forEach((cell) => cell.draw));
+      get undoStack(): Stack<Cell[][]> {
+        return this.#undoStack;
       }
 
-      evolve(): Cell[][] {
+      get redoStack(): Stack<Cell[][]> {
+        return this.#redoStack;
+      }
+
+      evolve(): void {
+        const prevState = this.#cells
+        this.#undoStack.push(prevState)
         const newCells = this.#cells.map((row, i) => {
           return row.map((cell, j) => {
               //Loop over all the neighbours of each cell and find out how many are alive.
@@ -110,11 +145,11 @@ export class World implements WorldInterface{
               //Use conway's conditions to evolve the matrix of cells
               if (cell.isAlive) {
                   if (aliveNeighbours.length < 2 || aliveNeighbours.length > 3) {
-                      return new Cell(cell.width, cell.height, cell.posX, cell.posY, false);
+                      return new Cell(cell.posX, cell.posY, false);
                   }
               } else {
                   if (aliveNeighbours.length === 3) {
-                      return new Cell(cell.width, cell.height, cell.posX, cell.posY, true);
+                      return new Cell(cell.posX, cell.posY, true);
                   }
               }
               return cell;
@@ -124,8 +159,58 @@ export class World implements WorldInterface{
         return newCells;
       }
 
-      setContext(ctx:CanvasRenderingContext2D): void {
-          this.#cells.forEach((row) =>row.forEach((cell) => cell.ctx = ctx));
+    undo(): void {
+      if (this.#undoStack.size() > 0) {
+          const lastState = this.#undoStack.pop();
+          const currentState = this.#cells;
+          this.#redoStack.push(currentState);
+
+          if (lastState) {
+              this.#cells = lastState;
+          }
+          console.log(`undo ${this.#undoStack.size()}`);
       }
+    }
+
+    redo(): void {
+       if (this.#redoStack.size() > 0) {
+          const lastState: Cell[][] = this.#redoStack.pop()
+          const currentState = this.#cells;
+          this.#undoStack.push(currentState)
+          if (lastState) {
+            this.#cells = lastState
+          }
+          console.log(`redo ${this.#redoStack.size()}`)
+      }
+    }
+
+    emptyRedoStack(): void {
+      this.#redoStack = new Stack<Cell[][]>;
+    }
+
+    convertToJSON(): string {
+      const world:string = JSON.stringify({
+        id:this.#id,
+        name:this.#name,
+        columns:this.#columns,
+        rows:this.#rows,
+        cells:this.#cells.map((row)=> row.map((cell)=>cell.convertToJSON()))
+      })
+      return world;
+    }
+    
+    // Method to convert the World instance to a JSON object
+    toJsonObject() {
+      return {
+        id: this.#id,
+        generations:this.generation,
+        columns: this.#columns,
+        rows: this.#rows,
+        name: this.#name,
+        created: this.#created,
+        lastUpdate: new Date(),
+        cells:this.#cells.map((row)=> row.map((cell)=>cell.convertToJSON()))
+      };
+  }
 
 }
