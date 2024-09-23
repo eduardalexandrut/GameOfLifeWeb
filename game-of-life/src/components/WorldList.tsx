@@ -50,9 +50,8 @@ export default function WorldSelector(props:viewComponentPropType) {
         const cell = JSON.parse(cellString);
         return new Cell(cell.posX, cell.posY, cell.isAlive)}
       ))
-    const newWorld = new World(world.id, world.columns, world.rows, world.name, world.created, cells, world.lastUpdate, world.generation, world.image);
+    const newWorld = new World(world.id, world.columns, world.rows, world.name, world.created, cells, world.lastUpdate, world.generations, world.image);
     updateWorld(newWorld);
-    console.log(worldRef.generation);
     props.setView(View.Player);
   }
 

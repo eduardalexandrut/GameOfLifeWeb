@@ -44,7 +44,7 @@ const WorldPlayer = (props:worldPlayer) => {
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
     const [speed, setSpeed] = useState<number>(500);
     const [zoom, setZoom] = useState<number>(1);
-    const [generation, setGeneration] = useState<number>(world.generation);
+    const [generation, setGeneration] = useState<number>(world.generations);
     const [history, setHistory] = useState<Stack<Cell[][]>>(new Stack<Cell[][]>());
     const [historyAction, setHistoryAction] = useState<Actions| null>(null);
     const [tool, setTool] = useState<Tools>(Tools.Draw)
@@ -52,6 +52,7 @@ const WorldPlayer = (props:worldPlayer) => {
     const canvasRef = useRef(null);
     const hasMounted = useRef<boolean>(false);
     const updateWorld = useSetWorldContext();
+
 
     const handleSpeed = (value:number) => {
         const newSpeed = Math.min(Math.max(speed + value, 100), 3000)
@@ -114,7 +115,7 @@ const WorldPlayer = (props:worldPlayer) => {
     const saveWorld = () => {
         const newWorld = new World(world.id, world.columns, world.rows, world.name,world.created, world.cells, new Date(), generation, "");
         world.lastUpdate = new Date();
-        world.generation = generation;
+        world.generations = generation;
         //updateWorld(newWorld);
         saveToServer(world);
     };

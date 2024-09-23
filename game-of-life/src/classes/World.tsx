@@ -9,10 +9,9 @@ interface WorldInterface {
     cells: Cell[][],
     created: Date,
     lastUpdate:Date,
-    generation:number,
+    generations:number,
     image:string
     evolve(offsetX:number, offsetY:number): void,
-    //setContext(ctx:CanvasRenderingContext2D): void
 }
 const CELL_COLUMNS = 50;
 const CELL_ROWS = 50;
@@ -33,11 +32,11 @@ export class World implements WorldInterface{
     #created: Date;
     #undoStack: Stack<Cell[][]>;
     #redoStack: Stack<Cell[][]>;
-    lastUpdate:Date;
-    generation:number;
-    image:string;
+    #lastUpdate:Date;
+    #generations:number;
+    #image:string;
 
-    constructor(id:number, columns: number, rows: number, name: string, created:Date,cells: Cell[][], lastUpdate:Date, generation:number, image:string) {
+    constructor(id:number, columns: number, rows: number, name: string, created:Date,cells: Cell[][], lastUpdate:Date, generations:number, image:string) {
       this.#id = id;
       this.#columns = columns;
       this.#rows = rows;
@@ -46,9 +45,9 @@ export class World implements WorldInterface{
       this.#created = created;
       this.#undoStack = new Stack<Cell[][]>;
       this.#redoStack = new Stack<Cell[][]>;
-      this.lastUpdate = lastUpdate;
-      this.generation = generation;
-      this.image = image;
+      this.#lastUpdate = lastUpdate;
+      this.#generations = generations;
+      this.#image = image;
       }
 
       
@@ -108,6 +107,30 @@ export class World implements WorldInterface{
       set name(value: string) {
         this.#name = value;
       }
+
+      get generations(): number {
+        return this.#generations;
+      }
+
+      set generations(value:number) {
+        this.#generations = value;
+      }
+
+      get lastUpdate(): Date {
+        return this.#lastUpdate;
+      }
+
+      set lastUpdate(value: Date) {
+        this.#lastUpdate = this.#lastUpdate;
+      }
+
+      get image(): string {
+        return this.#image;
+      }
+
+      set image(value:string) {
+        this.#image = value;
+      }
     
       get cells(): Cell[][] {
         return this.#cells;
@@ -156,7 +179,7 @@ export class World implements WorldInterface{
           });
         });
 
-        return newCells;
+        this.#cells = newCells;
       }
 
     undo(): void {
@@ -203,7 +226,7 @@ export class World implements WorldInterface{
     toJsonObject() {
       return {
         id: this.#id,
-        generations:this.generation,
+        generations:this.generations,
         columns: this.#columns,
         rows: this.#rows,
         name: this.#name,
