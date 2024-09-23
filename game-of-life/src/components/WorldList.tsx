@@ -54,13 +54,13 @@ export default function WorldSelector(props:viewComponentPropType) {
   }
 
   //Function to remove a World from the db.
-  const removeWorld = (id) => {
+  const removeWorld = (id, image) => {
     fetch('http://localhost:5000/delete-world', {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ id }),
+      body: JSON.stringify({ id:id, image:image }),
     })
     .then(res => {
       if (!res.ok) {
@@ -129,7 +129,7 @@ export default function WorldSelector(props:viewComponentPropType) {
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick = {() => removeWorld(world.id)}>
+                        <AlertDialogAction onClick = {() => removeWorld(world.id, world.image)}>
                           Delete
                         </AlertDialogAction>
                       </AlertDialogFooter>

@@ -121,16 +121,41 @@ app.get('/get-worlds', (req, res) => {
 });
 
 app.delete('/delete-world', (req,res) => {
-  const filePath = path.join(__dirname, `../data/${req.body.id}.json`)
-  fs.unlink(filePath, (err) => {
-    if (err) {
-      return res.status(500).send(`Error while deleting the file:${err}`);
-    } 
-    return res.status(200).send("World removed succesfully.")
+  const jsonFilePath = path.join(__dirname, `../data/${req.body.id}.json`);
+  const imageFilePath = path.join(__dirname,`../public/images/${req.body.id}.png`);
+  console.log(imageFilePath)
 
+  const removeJson = new Promise((resolve, reject) => {
+    //Remove json file.
+    fs.unlink(jsonFilePath, (err) => {
+      if (err) {
+        reject(`Error while deleting the JSON file: ${err}`);
+      } else {
+        resolve('JSON file deleted');
+      }
+    })
   })
-})
 
+  //Remove image.
+  const removeImage = new Promise((resolve, reject) => {
+    fs.unlink(imageFilePath, (err) => {
+      if (err) {
+        reject(`Couldn't delete image: ${err}`)
+      } else{
+        resolve("Sucesfuly deleted image");
+      }
+    })
+  })
+
+  Promise.all([removeJson,removeImage])
+  .then((results) => {
+    res.status(200).send('World and image removed successfully.');
+  })
+  .catch((err) => {
+    res.status(500).send(err);
+  });
+
+})
 
 // Start the server
 app.listen(port, () => {
