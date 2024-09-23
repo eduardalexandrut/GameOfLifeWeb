@@ -18,6 +18,11 @@ import { viewComponentPropType } from "./WorldBuilder";
 import { View } from "../App";
 import { World } from "../classes/World";
 
+export interface worldPlayerPropType extends viewComponentPropType{
+    aliveColor:string,
+    deadColor:string
+}  
+
 export enum Actions{
     UNDO,
     REDO
@@ -34,7 +39,8 @@ export enum MenuAction {
     SAVE_EXIT
 }
 
-const WorldPlayer = (props:viewComponentPropType) => {
+
+const WorldPlayer = (props:worldPlayerPropType) => {
     const world = useWorldContext();
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
@@ -108,8 +114,10 @@ const WorldPlayer = (props:viewComponentPropType) => {
 
 
     const saveWorldToServer = async (newWorld:World) => {
-        const worldJSON = newWorld.toJsonObject();  // Assuming toJsonObject exists in your World class
-        const jsonData = JSON.stringify(worldJSON);
+        const worldJSON = newWorld.toJsonObject() as {[key:string]: any};  //Transform world class instance into js object.
+        worldJSON.aliveColor = props.aliveColor;
+        worldJSON.deadColor = props.deadColor;
+        const jsonData = JSON.stringify(worldJSON);//Transform world js obejct into json string.
   
         try {
           const response = await fetch('http://localhost:5000/add-world', {
@@ -234,6 +242,8 @@ const WorldPlayer = (props:viewComponentPropType) => {
             setZoom={setZoom}
             tool={tool}
             showGrid = {showGrid}
+            aliveColor={props.aliveColor}
+            deadColor={props.deadColor}
         />
     </React.Fragment>
     

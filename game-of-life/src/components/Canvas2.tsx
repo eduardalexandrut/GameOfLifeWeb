@@ -20,7 +20,9 @@ type propType = {
     isDrawing: boolean,
     zoom: number,
     tool: Tools,
-    showGrid: boolean
+    showGrid: boolean,
+    aliveColor: string,
+    deadColor: string
 }
 const DEF_CELL_WIDTH = 50;
 const DEF_CELL_HEIGHT = 50;
@@ -97,11 +99,11 @@ const Canvas2 = forwardRef<CanvasRef, propType>((props, ref) => {
           const drawY = (cell.posY * size) * zoom;
   
           if (cell.isAlive) {
-              contextRef.current.fillStyle = '#D9D9D9';
-              contextRef.current.strokeStyle = props.showGrid ? '#011930' : '#D9D9D9' //'#00072D';
+              contextRef.current.fillStyle = props.aliveColor;
+              contextRef.current.strokeStyle = props.showGrid ? props.deadColor : props.aliveColor;
           } else {
-              contextRef.current.fillStyle = '#011930'//'#00072D';
-              contextRef.current.strokeStyle = props.showGrid ? '#D9D9D9' : '#011930';
+              contextRef.current.fillStyle = props.deadColor;
+              contextRef.current.strokeStyle = props.showGrid ? props.deadColor : props.deadColor;
           }
 
           contextRef.current.strokeRect(drawX, drawY, size * zoom, size * zoom);

@@ -8,7 +8,7 @@ import { View } from '../App';
 import { Cell } from '../classes/Cell';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
 
-export default function WorldSelector(props:viewComponentPropType) {
+export default function WorldList(props:viewComponentPropType) {
 
   const [worlds, setWorlds] = useState<Array<any>>([]);
   const updateWorld = useSetWorldContext();

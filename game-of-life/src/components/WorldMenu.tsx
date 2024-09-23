@@ -6,19 +6,6 @@ type propType = {
     setView: React.Dispatch<React.SetStateAction<View>>
 }
 export default function WorldMenu(props:propType) {
-    const handleView = (view:View) =>{
-        switch(view){
-            case View.Builder:
-                props.setView(View.Builder);
-                break;
-            case View.Selector:
-                props.setView(View.Selector);
-                break;
-            default:
-                props.setView(View.Menu)
-                break;
-        }
-    }
   return (
     <div>
         <div id = 'menu-title'>
@@ -26,8 +13,8 @@ export default function WorldMenu(props:propType) {
             <p>Game Of Life</p>
         </div>
         <div id='menu'>
-            <button onClick={()=>handleView(View.Builder)} className='text-red'>New World</button>
-            <button onClick = {()=>handleView(View.Selector)}>My Worlds</button>
+            <button onClick={()=>props.setView(View.Builder)} className='text-red'>New World</button>
+            <button onClick = {()=>props.setView(View.List)}>My Worlds</button>
             <button>Game of Life</button>
         </div>
 

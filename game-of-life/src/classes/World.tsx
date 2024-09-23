@@ -13,8 +13,7 @@ interface WorldInterface {
     image:string
     evolve(offsetX:number, offsetY:number): void,
 }
-const CELL_COLUMNS = 50;
-const CELL_ROWS = 50;
+
 // Define relative positions of neighbors.
 const relativePositions = [
   [-1, -1], [-1, 0], [-1, 1],
@@ -230,7 +229,7 @@ export class World implements WorldInterface{
     }
     
     // Method to convert the World instance to a JSON object
-    toJsonObject() {
+    toJsonObject(){
       return {
         id: this.#id,
         generations:this.generations,

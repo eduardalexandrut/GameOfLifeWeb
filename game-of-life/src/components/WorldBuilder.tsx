@@ -17,8 +17,12 @@ export type viewComponentPropType = {
     setView: React.Dispatch<React.SetStateAction<View>>,
 }
 
-const DEF_ALIVE_CELL_COLOR = "#D9D9D9";
-const DEF_DEAD_CELL_COLOR = "#011930"
+export interface worldBuilderPropType extends viewComponentPropType {
+  aliveColor:string,
+  setAliveColor:React.Dispatch<React.SetStateAction<string>>,
+  deadColor:string,
+  setDeadColor:React.Dispatch<React.SetStateAction<string>>
+}
 
 const DEF_RULES = "Any live cell with fewer than two live neighbours dies, as if by underpopulation.\n" +
     "Any live cell with two or three live neighbours lives on to the next generation.\n" +
@@ -26,7 +30,7 @@ const DEF_RULES = "Any live cell with fewer than two live neighbours dies, as if
     "Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction."
 
 
-const WorldBuilder = (props:viewComponentPropType) => {
+const WorldBuilder = (props:worldBuilderPropType) => {
     const updateWorld = useSetWorldContext();
     const [name, setName] = useState<string>("New World");
     const [width, setWidth] = useState<number>(10);
@@ -34,9 +38,7 @@ const WorldBuilder = (props:viewComponentPropType) => {
     //New variables
     const [initialState, setInitialState] = useState<string>("default");
     const [alivePercentage, setAlivePercentage] = useState<number>(50);
-    const [aliveColor, setAliveColor] = useState<string>(DEF_ALIVE_CELL_COLOR);
-    const [deadColor, setDeadColor] = useState<string>(DEF_DEAD_CELL_COLOR)
-    const [rules, setRules] = useState<string>(DEF_RULES)
+    const [rules, setRules] = useState<string>(DEF_RULES);
 
 
     const handleCreate = () => {
@@ -134,11 +136,11 @@ const WorldBuilder = (props:viewComponentPropType) => {
                         <Input
                           id="aliveColor"
                           type="color"
-                          value={aliveColor}
-                          onChange={(e) => setAliveColor(e.target.value)}
+                          value={props.aliveColor}
+                          onChange={(e) => props.setAliveColor(e.target.value)}
                           className="w-16 h-16 bg-white border-gray-300"
                         />
-                        <span className="text-lg text-gray-600">{aliveColor}</span>
+                        <span className="text-lg text-gray-600">{props.aliveColor}</span>
                       </div>
                     </div>
                     <div className="space-y-2">
@@ -147,11 +149,11 @@ const WorldBuilder = (props:viewComponentPropType) => {
                         <Input
                           id="deadColor"
                           type="color"
-                          value={deadColor}
-                          onChange={(e) => setDeadColor(e.target.value)}
+                          value={props.deadColor}
+                          onChange={(e) => props.setDeadColor(e.target.value)}
                           className="w-16 h-16 bg-white border-gray-300"
                         />
-                        <span className="text-lg text-gray-600">{deadColor}</span>
+                        <span className="text-lg text-gray-600">{props.deadColor}</span>
                       </div>
                     </div>
                   </div>
