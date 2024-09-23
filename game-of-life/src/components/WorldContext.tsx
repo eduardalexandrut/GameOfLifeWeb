@@ -20,38 +20,33 @@ export const useSetWorldContext = () => useContext(UpdateWorldContext);
 export const WorldProvider = ({ children }: { children: ReactNode }) => {
     const worldRef = useRef<World | null>(null);
 
-    const updateWorld = (newWorld:World/*updatedFields: Partial<World>*/) => {
-        worldRef.current = newWorld;
-        /*setWorld(newWorld);
-        setWorld((prevWorld) => {
-            if (prevWorld === null) {
-                return new World(
-                    updatedFields.id,
-                    updatedFields.columns,
-                    updatedFields.rows,
-                    updatedFields.name,
-                    updatedFields.created,
-                    updatedFields.cells,
-                    updatedFields.lastUpdate ?? new Date(),  // Set lastUpdate or default to current date
-                    updatedFields.generation ?? 0,           // Set generation or default to 0
-                    updatedFields.image ?? ""           // Optional other field
-                  );// Handle the case where world is null initially
-            }
-            // Create a new World instance with updated fields
-            const newWorld = new World(
-              updatedFields.id ?? prevWorld.id,                  // Update the ID if provided
-              updatedFields.columns ?? prevWorld.columns,        // Update columns if provided
-              updatedFields.rows ?? prevWorld.rows,              // Update rows if provided
-              updatedFields.name ?? prevWorld.name,              // Update name if provided
-              updatedFields.created ?? prevWorld.created,        // Update creation date if provided
-              updatedFields.cells ?? prevWorld.cells,            // Update cells if provided
-              updatedFields.lastUpdate ?? prevWorld.lastUpdate,  // Update lastUpdate if provided
-              updatedFields.generation ?? prevWorld.generation,  // Update generation if provided
-              updatedFields.image?? prevWorld.image   // Update otherField if provided
-            );
-      
-            return newWorld;
-        });*/
+    const updateWorld = (updatedFields: Partial<World>) => {
+        if (worldRef.current === null) {
+            worldRef.current = new World(
+                updatedFields.id,
+                updatedFields.columns,
+                updatedFields.rows,
+                updatedFields.name,
+                updatedFields.created,
+                updatedFields.cells,
+                updatedFields.lastUpdate ?? new Date(),  // Set lastUpdate or default to current date
+                updatedFields.generations ?? 0,           // Set generation or default to 0
+                updatedFields.image ?? ""           // Optional other field
+              );// Handle the case where world is null initially
+        } else {
+            // Update only fields that are provided
+            worldRef.current.id = updatedFields.id ?? worldRef.current.id;
+            worldRef.current.columns = updatedFields.columns ?? worldRef.current.columns;
+            worldRef.current.rows = updatedFields.rows ?? worldRef.current.rows;
+            worldRef.current.name = updatedFields.name ?? worldRef.current.name;
+            worldRef.current.created = updatedFields.created ?? worldRef.current.created;
+            worldRef.current.cells = updatedFields.cells ?? worldRef.current.cells;
+            worldRef.current.lastUpdate = updatedFields.lastUpdate ?? updatedFields.lastUpdate;  // Default to current date
+            worldRef.current.generations = updatedFields.generations ?? worldRef.current.generations; // Update or keep existing
+            worldRef.current.image = updatedFields.image ?? worldRef.current.image; // Update or keep existing
+     
+        }
+
     }
 
     

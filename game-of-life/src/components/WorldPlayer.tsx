@@ -114,9 +114,9 @@ const WorldPlayer = (props:worldPlayer) => {
 
     const saveWorld = () => {
         const newWorld = new World(world.id, world.columns, world.rows, world.name,world.created, world.cells, new Date(), generation, "");
-        world.lastUpdate = new Date();
-        world.generations = generation;
-        //updateWorld(newWorld);
+       // world.lastUpdate = new Date();
+        //world.generations = generation;
+        updateWorld(newWorld);
         saveToServer(world);
     };
 

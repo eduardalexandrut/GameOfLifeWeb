@@ -80,12 +80,20 @@ export class World implements WorldInterface{
         return this.#id;
       }
 
+      set id(value:number) {
+        this.#id = value;
+      }
+
       get columns(): number {
         return this.#columns;
       }
 
       get created(): Date {
         return this.#created;
+      }
+
+      set created(value:Date) {
+        this.#created = value;
       }
     
       set columns(value: number) {
