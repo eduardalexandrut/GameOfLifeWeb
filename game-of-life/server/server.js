@@ -123,7 +123,6 @@ app.get('/get-worlds', (req, res) => {
 app.delete('/delete-world', (req,res) => {
   const jsonFilePath = path.join(__dirname, `../data/${req.body.id}.json`);
   const imageFilePath = path.join(__dirname,`../public/images/${req.body.id}.png`);
-  console.log(imageFilePath)
 
   const removeJson = new Promise((resolve, reject) => {
     //Remove json file.
